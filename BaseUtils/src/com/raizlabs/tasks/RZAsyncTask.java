@@ -1,5 +1,6 @@
 package com.raizlabs.tasks;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 
 /**
@@ -36,6 +37,51 @@ public abstract class RZAsyncTask<Params, Progress, Result> extends AsyncTask<Pa
 	
 	protected void onCancelled(Result result) {
 		AsyncTaskEvent.raiseCancelled(result);
+	}
+	
+	/**
+	 * Gets whether this task should be executed on the
+	 * {@link AsyncTask#THREAD_POOL_EXECUTOR} when
+	 * {@link #executeInParallel()} is called.
+	 * <br><br>
+	 * By default, this will return true if the version is >= Honeycomb.
+	 * @return True to execute on the {@link AsyncTask#THREAD_POOL_EXECUTOR},
+	 * otherwise false.
+	 */
+	protected boolean executeInParallelOnThreadPoolExecutor() {
+		return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
+	}
+	
+	/**
+	 * Executes this {@link RZAsyncTask} in parallel.
+	 * <br><br>
+	 * Uses {@link #executeOnExecutor(java.util.concurrent.Executor, Object...)}
+	 * if {@link #executeInParallelOnThreadPoolExecutor()} returns true, else it will
+	 * execute using {@link #execute(Object...)}.
+	 * @return This {@link RZAsyncTask}.
+	 */
+	public RZAsyncTask<Params, Progress, Result> executeInParallel() {
+		return executeAsync((Params[])null);
+	}
+	
+	/**
+	 * Executes this {@link RZAsyncTask} in parallel.
+	 * <br><br>
+	 * Uses {@link #executeOnExecutor(java.util.concurrent.Executor, Object...)}
+	 * if {@link #executeInParallelOnThreadPoolExecutor()} returns true, else it will
+	 * execute using {@link #execute(Object...)}.
+	 * @param values The values to be passed to the task.
+	 * @return This {@link RZAsyncTask}.
+	 */
+	@SuppressLint("NewApi")
+	public RZAsyncTask<Params, Progress, Result> executeAsync(Params...values) {
+		if (executeInParallelOnThreadPoolExecutor()) {
+			executeOnExecutor(THREAD_POOL_EXECUTOR, values);
+			return this;
+		} else {
+			execute(values);
+			return this;
+		}
 	}
 	
 	@Override
