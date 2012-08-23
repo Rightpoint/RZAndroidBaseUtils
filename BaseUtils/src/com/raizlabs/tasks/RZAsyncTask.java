@@ -61,7 +61,7 @@ public abstract class RZAsyncTask<Params, Progress, Result> extends AsyncTask<Pa
 	 * @return This {@link RZAsyncTask}.
 	 */
 	public RZAsyncTask<Params, Progress, Result> executeInParallel() {
-		return executeAsync((Params[])null);
+		return executeInParallel((Params[])null);
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public abstract class RZAsyncTask<Params, Progress, Result> extends AsyncTask<Pa
 	 * @return This {@link RZAsyncTask}.
 	 */
 	@SuppressLint("NewApi")
-	public RZAsyncTask<Params, Progress, Result> executeAsync(Params...values) {
+	public RZAsyncTask<Params, Progress, Result> executeInParallel(Params...values) {
 		if (executeInParallelOnThreadPoolExecutor()) {
 			executeOnExecutor(THREAD_POOL_EXECUTOR, values);
 			return this;
