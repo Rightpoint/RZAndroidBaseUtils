@@ -24,8 +24,10 @@ public class RZAsyncTaskEvent<Progress, Result> {
 	 * @param listener The listener to be notified.
 	 */
 	public void addListener(RZAsyncTaskListener<Progress, Result> listener) {
-		synchronized (listeners) {
-			listeners.add(listener);
+		if (listener != null) {
+			synchronized (listeners) {
+				listeners.add(listener);
+			}
 		}
 	}
 
