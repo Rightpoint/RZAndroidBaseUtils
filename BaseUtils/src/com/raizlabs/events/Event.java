@@ -1,7 +1,6 @@
 package com.raizlabs.events;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
 
 /**
  * Class which represents an Event with arguments of type T.
@@ -10,13 +9,13 @@ import java.util.List;
  * @param <T>
  */
 public class Event<T> {
-	private List<EventListener<T>> listeners;
+	private HashSet<EventListener<T>> listeners;
 	
 	/**
 	 * Creates a new RZEvent
 	 */
 	public Event() {
-		listeners = new LinkedList<EventListener<T>>();
+		listeners = new HashSet<EventListener<T>>();
 	}
 	
 	/**
