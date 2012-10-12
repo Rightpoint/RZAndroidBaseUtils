@@ -1,6 +1,7 @@
 package com.raizlabs.baseutils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,4 +52,12 @@ public class IOUtils {
 		}
 	}
 	
+	/**
+	 * Creates an {@link InputStream} from the data in the given string.
+	 * @param str The string to set as the contents of the stream.
+	 * @return The created {@link InputStream}
+	 */
+	public static InputStream getInputStream(String str) {
+		return new ByteArrayInputStream(str.getBytes());
+	}
 }
