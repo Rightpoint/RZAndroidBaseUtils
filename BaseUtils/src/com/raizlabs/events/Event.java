@@ -23,7 +23,7 @@ public class Event<T> {
 	 * @param listener The listener to be notified.
 	 */
 	public void addListener(EventListener<T> listener) {
-		listeners.add(listener);
+		if (listener != null) listeners.add(listener);
 	}
 	
 	/**
@@ -45,5 +45,12 @@ public class Event<T> {
 		for (EventListener<T> listener : listeners) {
 			listener.onEvent(sender, args);
 		}
+	}
+	
+	/**
+	 * Clears all listeners from this event.
+	 */
+	public void clear() {
+		listeners.clear();
 	}
 }
