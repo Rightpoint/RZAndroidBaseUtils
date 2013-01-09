@@ -41,7 +41,10 @@ public class ImageMixView extends View {
 		mixDirection = direction;
 	}
 	
+	// Rectangles to sample from in the source images
 	Rect src1, src2;
+	// Rectangles to draw to in the output canvas
+	Rect dst1, dst2;
 	
 	private Bitmap bitmap1, bitmap2;
 	/**
@@ -110,6 +113,8 @@ public class ImageMixView extends View {
 	private void init() {
 		setMixDirection(MixDirection.VERTICAL);
 		setMixValue(0);
+		dst1 = new Rect();
+		dst2 = new Rect();
 	}
 	
 	@Override
@@ -149,6 +154,14 @@ public class ImageMixView extends View {
 	}
 	
 	@Override
+	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+		super.onLayout(changed, left, top, right, bottom);
+		// Resize our output rectangles
+		dst1.right = dst2.right = getWidth();
+		dst1.bottom = dst2.bottom = getHeight();
+	}
+	
+	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		if (bitmap1 == null || bitmap2 == null) return;
@@ -160,19 +173,32 @@ public class ImageMixView extends View {
 		// Get the non-reverse bits
 		switch (mixDirection & ~MixDirection.REVERSE) {
 		case MixDirection.HORIZONTAL:
-			final int left = (int) (currMix * bitmap1.getWidth());
-			src1.left = left;
-			src2.right = left;
+			// Update the input rectangles
+			final int srcLeft = (int) (currMix * bitmap1.getWidth());
+			src1.left = srcLeft;
+			src2.right = srcLeft;
+			
+			// Update the output rectangles
+			final int dstLeft = (int) (currMix * getWidth());
+			dst1.left = dstLeft;
+			dst2.right = dstLeft;
 			break;
 		case MixDirection.VERTICAL:
-			final int height = bitmap1.getHeight();
-			final int bottom = (int) (height - (currMix * height));
-			src1.bottom = bottom;
-			src2.top = bottom;
+			// Update the input rectangles
+			final int srcHeight = bitmap1.getHeight();
+			final int srcBottom = (int) (srcHeight - (currMix * srcHeight));
+			src1.bottom = srcBottom;
+			src2.top = srcBottom;
+			
+			// Update the output rectangles
+			final int dstHeight = getHeight();
+			final int dstBottom = (int) (dstHeight - (currMix * dstHeight));
+			dst1.bottom = dstBottom;
+			dst2.top = dstBottom;
 			break;
 		}
 		
-		canvas.drawBitmap(bitmap1, src1, src1, null);
-		canvas.drawBitmap(bitmap2, src2, src2, null);
+		canvas.drawBitmap(bitmap1, src1, dst1, null);
+		canvas.drawBitmap(bitmap2, src2, dst2, null);
 	}
 }
