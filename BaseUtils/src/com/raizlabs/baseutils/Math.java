@@ -1,5 +1,6 @@
 package com.raizlabs.baseutils;
 
+
 /**
  * 
  * A class of math utility functions
@@ -32,5 +33,16 @@ public class Math {
 	 */
 	public static float lerp(float start, float end, float t) {
 		return start + (end - start) * t;
+	}
+	
+	/**
+	 * Clamps the given value between the two end points.
+	 * @param value The value to clamp.
+	 * @param min The minimum allowed value.
+	 * @param max The maximum allowed value.
+	 * @return The clamped value.
+	 */
+	public static float clamp(float value, float min, float max) {
+		return java.lang.Math.min(max, java.lang.Math.max(min, value));
 	}
 }
