@@ -1,4 +1,4 @@
-package com.raizlabs.view;
+package com.raizlabs.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
