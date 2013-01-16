@@ -20,11 +20,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
         <activity
             android:name=".viewgroupadapter.ViewGroupAdapterExampleActivity"
             android:label="ViewGroupAdapter Example" />
-        
+        <activity
+            android:name=".simplegenericadapter.SimpleGenericAdapterExampleActivity"
+            android:label="ViewGroupAdapter Example" />
+        <activity 
+            android:name=".viewholderstrategy.SimpleViewHolderStrategyExampleActivity"
+            android:label="SimpleViewHolderStrategy Example"/>
     </application>
 
 </manifest>

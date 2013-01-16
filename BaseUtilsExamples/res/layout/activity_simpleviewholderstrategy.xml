@@ -4,17 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ScrollView
+    <ListView 
+        android:id="@+id/simpleViewHolderStrategy_listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1" >
-
-        <LinearLayout
-            android:id="@+id/viewGroupAdapter_adapterLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+        android:layout_weight="1"/>
 
     <TextView
         android:layout_width="match_parent"

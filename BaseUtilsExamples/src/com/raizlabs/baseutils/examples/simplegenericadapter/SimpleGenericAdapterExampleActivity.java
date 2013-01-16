@@ -1,57 +1,49 @@
-package com.raizlabs.baseutils.examples.viewgroupadapter;
+package com.raizlabs.baseutils.examples.simplegenericadapter;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.raizlabs.baseutils.examples.R;
-import com.raizlabs.widget.adapters.ViewGroupAdapter;
-import com.raizlabs.widget.adapters.ViewGroupAdapter.ItemClickedListener;
+import com.raizlabs.widget.adapters.SimpleGenericAdapter;
 
-/**
- * Simple example of a {@link ViewGroupAdapter} that displays incrementing
- * strings.
- * @author Dylan James
- */
-public class ViewGroupAdapterExampleActivity extends Activity {
+public class SimpleGenericAdapterExampleActivity extends Activity {
 	private int currentCount = 0;
-	private ViewGroupAdapter<String> adapter;
+	private SimpleGenericAdapter<String> adapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_viewgroupadapter);
+		setContentView(R.layout.activity_simplegenericadapter);
 		// Grab the view to bind the adapter to
-		ViewGroup adapterGroup = (ViewGroup) findViewById(R.id.viewGroupAdapter_adapterLayout);
+		ListView listView = (ListView) findViewById(R.id.simpleGenericAdapter_listView);
 
 		// Create and bind an adapter which displays views representing strings
-		adapter = new ViewGroupAdapter<String>(adapterGroup) {
+		adapter = new SimpleGenericAdapter<String>(this, R.layout.simple_text_item_layout) {
 			@Override
-			protected View createView(String item, LayoutInflater inflater, ViewGroup root) {
-				// Inflate a new view
-				TextView text = (TextView) inflater.inflate(
-						R.layout.simple_text_item_layout, root, false);
-				// Simply set the text in a label
+			protected void populateView(String item, View view) {
+				// We know this view is the one in the layout file which is
+				// really just a TextView. Alternatively, we could use
+				// view.findViewById to find the views we want
+				TextView text = (TextView) view;
+				// Simply set the text in the label
 				text.setText(item);
-				return text;
 			}
 		};
 		
-		// When an item is clicked in the adapter, remove it.
-		adapter.setItemClickedListener(new ItemClickedListener<String>() {
+		listView.setAdapter(adapter);
+		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClicked(ViewGroupAdapter<String> adapter,
-					String item, int index) {
-				// Use removeAt to guarantee we remove the right index
-				// adapter.remove will remove the first occurrence of the object
-				adapter.removeAt(index);
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				adapter.remove(position);
 			}
 		});
 		
@@ -71,7 +63,7 @@ public class ViewGroupAdapterExampleActivity extends Activity {
 				for (int i = 0; i < 5; ++i) {
 					strings.add(getNextString());
 				}
-				adapter.add(strings);
+				adapter.addAll(strings);
 			}
 		});
 		
