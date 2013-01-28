@@ -2,6 +2,8 @@ package com.raizlabs.graphics.drawable.async;
 
 import java.lang.ref.WeakReference;
 
+import com.raizlabs.baseutils.ThreadingUtils;
+
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -187,7 +189,7 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 					final Drawable newDrawable = 
 							new AsyncDrawableWrapper<T>(drawable, BaseAsyncDrawableTask.this);
 					// Change the drawable on the UI thread
-					view.post(new Runnable() {
+					ThreadingUtils.runOnUIThread(new Runnable() {
 						@Override
 						public void run() {
 							// Double check that we're still the bound task
@@ -200,7 +202,7 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 								}
 							}
 						}
-					});
+					}, view);
 				}
 			}
 		}
@@ -255,7 +257,7 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 					final Drawable newDrawable = 
 							new AsyncDrawableWrapper<T>(drawable, BaseAsyncDrawableTask.this);
 					// Change the drawable on the UI thread
-					view.post(new Runnable() {
+					ThreadingUtils.runOnUIThread(new Runnable() {
 						@Override
 						public void run() {
 							// Double check that we're still the bound task
@@ -263,7 +265,7 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 								view.setImageDrawable(newDrawable);
 							}
 						}
-					});
+					}, view);
 				}
 			}
 		}
