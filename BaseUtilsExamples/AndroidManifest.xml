@@ -26,9 +26,12 @@
         <activity
             android:name=".simplegenericadapter.SimpleGenericAdapterExampleActivity"
             android:label="ViewGroupAdapter Example" />
-        <activity 
+        <activity
             android:name=".viewholderstrategy.SimpleViewHolderStrategyExampleActivity"
-            android:label="SimpleViewHolderStrategy Example"/>
+            android:label="SimpleViewHolderStrategy Example" />
+        <activity
+            android:name=".asyncdrawable.AsyncDrawableExampleActivity"
+            android:label="AsyncDrawable Example" />
     </application>
 
 </manifest>

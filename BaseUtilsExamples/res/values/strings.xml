@@ -2,5 +2,6 @@
 
     <string name="app_name">BaseUtils Examples</string>
     <string name="title_activity_main">BaseUtils Examples</string>
+    <string name="asyncdrawable_instructions">Click Load to start loading the images.\nClick an image to cancel loading it.\nOnce an image is completed, it will not need to be reloaded and will complete immediately. Click Reset to clear them again.</string>
 
 </resources>

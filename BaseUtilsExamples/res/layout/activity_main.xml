@@ -30,7 +30,7 @@
                 android:padding="@dimen/padding_medium"
                 android:text="SimpleGenericAdapter"
                 tools:context=".MainActivity" />
-            
+
             <Button
                 android:id="@+id/main_button_viewGroupAdapter"
                 android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
                 android:padding="@dimen/padding_medium"
                 android:text="ViewGroupAdapter"
                 tools:context=".MainActivity" />
-            
+
             <Button
                 android:id="@+id/main_button_simpleViewHolderStrategy"
                 android:layout_width="wrap_content"
@@ -47,6 +47,15 @@
                 android:layout_margin="2dp"
                 android:padding="@dimen/padding_medium"
                 android:text="SimpleViewHolderStrategy"
+                tools:context=".MainActivity" />
+
+            <Button
+                android:id="@+id/main_button_asyncDrawable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:padding="@dimen/padding_medium"
+                android:text="AsyncDrawable"
                 tools:context=".MainActivity" />
         </LinearLayout>
     </ScrollView>
