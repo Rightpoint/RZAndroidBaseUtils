@@ -94,7 +94,7 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 		if (wrapper.getView() == null) return;
 		Drawable drawable = null;
 		// If we aren't bound to the view, abort
-		if (wrapper.isBoundToView()) return;
+		if (!wrapper.isBoundToView()) return;
 		// If we aren't cancelled, start up the work 
 		if (!isCancelled()) {
 			drawable = doExecute();
