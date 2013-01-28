@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.raizlabs.baseutils.ThreadingUtils;
+
 import android.widget.Adapter;
 import android.widget.BaseAdapter;
 
@@ -31,7 +33,7 @@ public abstract class ListBasedAdapter<T> extends BaseAdapter implements List<T>
 	protected void setItemsList(List<T> list) {
 		if (list == null) list = new LinkedList<T>();
 		mList = list;
-		notifyDataSetChanged();
+		notifyDataSetChangedOnUIThread();
 	}
 	
 	/**
@@ -53,7 +55,7 @@ public abstract class ListBasedAdapter<T> extends BaseAdapter implements List<T>
 	 * Loads the given {@link List} into this adapter. This will use the same
 	 * reference, so any changes to the source list will be reflected by the
 	 * adapter whenever the data is repopulated. See
-	 * {@link #notifyDataSetChanged()}. 
+	 * {@link #notifyDataSetChangedOnUIThread()}. 
 	 * @param list The {@link List} to load.
 	 */
 	public void loadItemList(List<T> list) {
@@ -72,6 +74,19 @@ public abstract class ListBasedAdapter<T> extends BaseAdapter implements List<T>
 		setItemsList(data);
 	}
 	
+	private final Runnable dataSetChangedRunnable = new Runnable() {
+		@Override
+		public void run() {
+			notifyDataSetChanged();
+		}
+	};
+	/**
+	 * Calls {@link #notifyDataSetChangedOnUIThread()} on the UI thread.
+	 */
+	public void notifyDataSetChangedOnUIThread() {
+		ThreadingUtils.runOnUIThread(dataSetChangedRunnable);
+	}
+	
 	@Override
 	public int getCount() {
 		return mList.size();
@@ -85,34 +100,34 @@ public abstract class ListBasedAdapter<T> extends BaseAdapter implements List<T>
 	@Override
 	public void add(int location, T object) {
 		mList.add(location, object);
-		notifyDataSetChanged();
+		notifyDataSetChangedOnUIThread();
 	}
 
 	@Override
 	public boolean add(T object) {
 		final boolean result = mList.add(object);
-		notifyDataSetChanged();
+		notifyDataSetChangedOnUIThread();
 		return result;
 	}
 
 	@Override
 	public boolean addAll(int location, Collection<? extends T> collection) {
 		final boolean result = mList.addAll(location, collection);
-		if (result) notifyDataSetChanged();
+		if (result) notifyDataSetChangedOnUIThread();
 		return result;
 	}
 
 	@Override
 	public boolean addAll(Collection<? extends T> collection) {
 		final boolean result = mList.addAll(collection);
-		if (result) notifyDataSetChanged();
+		if (result) notifyDataSetChangedOnUIThread();
 		return result;
 	}
 
 	@Override
 	public void clear() {
 		mList.clear();
-		notifyDataSetChanged();
+		notifyDataSetChangedOnUIThread();
 	}
 
 	@Override
@@ -158,35 +173,35 @@ public abstract class ListBasedAdapter<T> extends BaseAdapter implements List<T>
 	@Override
 	public T remove(int location) {
 		T result = mList.remove(location);
-		notifyDataSetChanged();
+		notifyDataSetChangedOnUIThread();
 		return result;
 	}
 
 	@Override
 	public boolean remove(Object object) {
 		boolean result = mList.remove(object);
-		if (result) notifyDataSetChanged();
+		if (result) notifyDataSetChangedOnUIThread();
 		return result;
 	}
 
 	@Override
 	public boolean removeAll(Collection<?> collection) {
 		boolean result = mList.removeAll(collection);
-		if (result) notifyDataSetChanged();
+		if (result) notifyDataSetChangedOnUIThread();
 		return result;
 	}
 
 	@Override
 	public boolean retainAll(Collection<?> collection) {
 		boolean result = mList.retainAll(collection);
-		if (result) notifyDataSetChanged();
+		if (result) notifyDataSetChangedOnUIThread();
 		return result;
 	}
 
 	@Override
 	public T set(int location, T object) {
 		T result = mList.set(location, object);
-		if (!result.equals(object)) notifyDataSetChanged();
+		if (!result.equals(object)) notifyDataSetChangedOnUIThread();
 		return result;
 	}
 
