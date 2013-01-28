@@ -82,16 +82,27 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 		boolean cancelled = wrapper.cancelExistingWork();
 		// If we cancelled the work, set the loading drawable
 		if (cancelled) {
-			wrapper.update(getLoadingDrawable(), false);
-			onBind();
+			// Default to the bind drawable
+			Drawable drawable = onBind();
+			// If no drawable was given, fall back to the loading drawable
+			// and we are not done
+			if (drawable == null) {
+				drawable = getLoadingDrawable();
+				completed = false;
+			} else {
+				// We're done early!
+				completed = true;
+			}
+			// Update the view
+			wrapper.update(drawable, false);
 		}
 		return cancelled;
 	}
 	
 	@Override
 	public void execute() {
-		// Indicate that we haven't finished
-		completed = false;
+		// If we're already completed, break early
+		if (isCompleted()) return;
 		// If our view is emptied, we can't do anything, abort
 		if (wrapper.getView() == null) return;
 		Drawable drawable = null;
@@ -285,10 +296,31 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 	
 	
 	
-	
-	protected abstract void onBind();
+	/**
+	 * Called when this task is bound to a view. You may pass a Drawable back
+	 * to complete early, though this is run from the UI thread. A good case
+	 * for this is if an image is already cached in memory or something simliar.
+	 * @return The completed drawable if it can be obtained quickly, otherwise
+	 * null.
+	 */
+	protected abstract Drawable onBind();
+	/**
+	 * Called to do long running work and obtain the desired Drawable.
+	 * @return The resulting Drawable.
+	 */
 	protected abstract Drawable doExecute();
+	/**
+	 * Called to get a Drawable to display while the task is running.
+	 * @return The Drawable to display.
+	 */
 	protected abstract Drawable getLoadingDrawable();
+	/**
+	 * Called to get a Drawable to display when the task is cancelled.
+	 * @return The Drawable to display.
+	 */
 	protected abstract Drawable getCancelledDrawable();
+	/**
+	 * Called when the task is cancelled.
+	 */
 	protected abstract void onCancel();
 }

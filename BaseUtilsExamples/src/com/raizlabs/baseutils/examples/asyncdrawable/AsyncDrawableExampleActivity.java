@@ -12,7 +12,7 @@ import android.widget.ImageView;
 
 import com.raizlabs.baseutils.R;
 import com.raizlabs.graphics.drawable.async.AsyncDrawableTask;
-import com.raizlabs.graphics.drawable.async.AsyncDrawableWrapper;
+import com.raizlabs.graphics.drawable.async.AsyncDrawableUtils;
 import com.raizlabs.graphics.drawable.async.BaseAsyncDrawableTask;
 
 public class AsyncDrawableExampleActivity extends Activity {
@@ -53,9 +53,9 @@ public class AsyncDrawableExampleActivity extends Activity {
 		public void onClick(View v) {
 			// On click, try to grab the async drawable and cancel it
 			if (v instanceof ImageView) {
-				Drawable drawable = ((ImageView) v).getDrawable();
-				if (drawable instanceof AsyncDrawableWrapper<?>) {
-					((AsyncDrawableWrapper<?>) drawable).getTask().cancel();
+				AsyncDrawableTask<?> task = AsyncDrawableUtils.getTask((ImageView)v);
+				if (task != null) {
+					task.cancel();
 				}
 			}
 		}
@@ -107,7 +107,7 @@ public class AsyncDrawableExampleActivity extends Activity {
 			}
 		}).start();
 	}
-
+	
 	/**
 	 * Implementation of an {@link AsyncDrawableTask} which just pauses for a given
 	 * period of time to simulate work and then loads a given image resource
@@ -129,7 +129,9 @@ public class AsyncDrawableExampleActivity extends Activity {
 		}
 
 		@Override
-		protected void onBind() { }
+		protected Drawable onBind() { 
+			return null;
+		}
 
 		@Override
 		protected Drawable doExecute() {
