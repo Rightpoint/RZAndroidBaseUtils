@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.raizlabs.baseutils</groupId>
     <artifactId>RZBaseUtils</artifactId>
-    <packaging>jar</packaging>
+    <packaging>apklib</packaging>
     <name>RZBaseUtils</name>
     <version>1.0</version>
 
