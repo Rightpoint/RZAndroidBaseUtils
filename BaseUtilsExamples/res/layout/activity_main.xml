@@ -57,6 +57,15 @@
                 android:padding="@dimen/padding_medium"
                 android:text="AsyncDrawable"
                 tools:context=".MainActivity" />
+            
+            <Button
+                android:id="@+id/main_button_asyncDrawableList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:padding="@dimen/padding_medium"
+                android:text="AsyncDrawable - List"
+                tools:context=".MainActivity" />
         </LinearLayout>
     </ScrollView>
 

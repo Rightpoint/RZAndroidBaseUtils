@@ -32,6 +32,9 @@
         <activity
             android:name=".asyncdrawable.AsyncDrawableExampleActivity"
             android:label="AsyncDrawable Example" />
+        <activity
+            android:name=".asyncdrawable.AsyncDrawableListExampleActivity"
+            android:label="AsyncDrawable Example" />
     </application>
 
 </manifest>

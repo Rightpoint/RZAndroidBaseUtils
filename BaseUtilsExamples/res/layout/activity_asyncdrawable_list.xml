@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <ListView
+        android:id="@+id/asyncdrawable_list_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+    <TextView
+        android:id="@+id/asyncdrawable_list_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Images are loaded after a pause via a 5 Thread thread pool. Views are recycled and reloaded properly. Images are cached by their item number. Clicking on a loading image (blue square) will cancel loading. See code comments for more info." />
+</LinearLayout>

@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
-import com.raizlabs.baseutils.R;
+import com.raizlabs.baseutils.examples.R;
 import com.raizlabs.graphics.drawable.async.AsyncDrawableTask;
 import com.raizlabs.graphics.drawable.async.AsyncDrawableUtils;
 import com.raizlabs.graphics.drawable.async.BaseAsyncDrawableTask;
