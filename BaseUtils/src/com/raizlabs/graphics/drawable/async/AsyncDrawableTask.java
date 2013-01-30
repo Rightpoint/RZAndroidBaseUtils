@@ -30,7 +30,9 @@ public interface AsyncDrawableTask<T> {
 	public boolean isCompleted();
 	
 	/**
-	 * Binds this task to its designated view.
+	 * Binds this task to its designated view. This returns true if it was
+	 * bound successfully and there is work to do. If it returns false,
+	 * there is no point to executing this task. 
 	 * @return True if this task was bound, false if there was already a task
 	 * bound to the view to do the same work.
 	 */
