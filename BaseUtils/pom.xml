@@ -6,20 +6,25 @@
     <artifactId>RZBaseUtils</artifactId>
     <packaging>apklib</packaging>
     <name>RZBaseUtils</name>
+
     <version>1.0</version>
 
     <dependencies>
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
-			<version>4.0.1.2</version>
+			<version>4.1.1.4</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
-            <groupId>com.google.androidannotations</groupId>
-            <artifactId>androidannotations</artifactId>
-            <version>1</version>
-            <scope>provided</scope>
+
+			<groupId>com.googlecode.androidannotations</groupId>
+			<artifactId>androidannotations</artifactId>
+
+			<version>2.7</version>
+
+			<scope>provided</scope>
         </dependency>
     </dependencies>
 
