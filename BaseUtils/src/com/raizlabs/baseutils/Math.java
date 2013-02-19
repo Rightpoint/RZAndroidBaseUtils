@@ -45,4 +45,13 @@ public class Math {
 	public static float clamp(float value, float min, float max) {
 		return java.lang.Math.min(max, java.lang.Math.max(min, value));
 	}
+	
+	public static float distanceSquared(float x1, float x2, float y1, float y2) {
+		return (float) (java.lang.Math.pow(x2 - x1, 2) + java.lang.Math.pow(y2 - y1, 2));
+	}
+	
+	public static float distance(float x1, float x2, float y1, float y2) {
+		return (float) java.lang.Math.sqrt(
+				java.lang.Math.pow(x2 - x1, 2)  + java.lang.Math.pow(y2 - y1, 2));
+	}
 }
