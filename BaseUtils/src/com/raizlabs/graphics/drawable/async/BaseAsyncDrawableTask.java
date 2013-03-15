@@ -197,7 +197,7 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 				if (!checkIfBound || isBoundToView(view)) {
 					// Wrap the desired drawable in a wrapper that contains the information
 					// about this task
-					final Drawable newDrawable = 
+					final AsyncDrawableWrapper<T> newDrawable = 
 							new AsyncDrawableWrapper<T>(drawable, BaseAsyncDrawableTask.this);
 					// Change the drawable on the UI thread
 					ThreadingUtils.runOnUIThread(new Runnable() {
@@ -211,6 +211,7 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 								} else {
 									view.setBackgroundDrawable(newDrawable);
 								}
+								onDrawableUpdated(newDrawable.getDrawble());
 							}
 						}
 					}, view);
@@ -265,7 +266,7 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 				if (!checkIfBound || isBoundToView(view)) {
 					// Wrap the desired drawable in a wrapper that contains the information
 					// about this task
-					final Drawable newDrawable = 
+					final AsyncDrawableWrapper<T> newDrawable = 
 							new AsyncDrawableWrapper<T>(drawable, BaseAsyncDrawableTask.this);
 					// Change the drawable on the UI thread
 					ThreadingUtils.runOnUIThread(new Runnable() {
@@ -274,6 +275,7 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 							// Double check that we're still the bound task
 							if (!checkIfBound ||isBoundToView(view)) {
 								view.setImageDrawable(newDrawable);
+								onDrawableUpdated(newDrawable.getDrawble());
 							}
 						}
 					}, view);
@@ -294,7 +296,11 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 		}
 	}
 	
-	
+	/**
+	 * Called when the drawable for the view is updated. This will be called on the UI thread.
+	 * @param drawable The drawable which was committed.
+	 */
+	protected void onDrawableUpdated(Drawable drawable) { }
 	
 	/**
 	 * Called when this task is bound to a view. You may pass a Drawable back
