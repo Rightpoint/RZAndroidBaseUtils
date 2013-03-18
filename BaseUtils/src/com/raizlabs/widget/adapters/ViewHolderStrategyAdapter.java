@@ -65,4 +65,8 @@ public class ViewHolderStrategyAdapter<Item, Holder> extends ListBasedAdapter<It
 			return convertView;
 		}
 	}
+	
+	public ViewHolderStrategy<Item, Holder> getStrategy() {
+		return this.strategy;
+	}
 }
