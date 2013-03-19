@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.ListIterator;
 
 import com.raizlabs.baseutils.ThreadingUtils;
+import com.raizlabs.events.EventListener;
+import com.raizlabs.util.observable.ObservableList;
 
 import android.widget.Adapter;
 import android.widget.BaseAdapter;
@@ -37,6 +39,23 @@ public abstract class ListBasedAdapter<T> extends BaseAdapter implements List<T>
 	}
 	
 	/**
+	 * Sets the {@link ObservableList} of items in this adapter, and subscribes
+	 * to updates.
+	 * @param list The {@link ObservableList} of items to use.
+	 */
+	protected void setItemsList(ObservableList<T> list) {
+		if (list != null) list.getDataChangedEvent().addListener(observableListChangedListener);
+		setItemsList((List<T>) list);
+	}
+	
+	private EventListener<ObservableList<T>> observableListChangedListener =
+			new EventListener<ObservableList<T>>() {
+				public void onEvent(Object sender, ObservableList<T> args) {
+					notifyDataSetChangedOnUIThread();
+				}
+			};
+	
+	/**
 	 * Constructs an empty {@link ListBasedAdapter}.
 	 */
 	protected ListBasedAdapter() {
@@ -59,6 +78,17 @@ public abstract class ListBasedAdapter<T> extends BaseAdapter implements List<T>
 	 * @param list The {@link List} to load.
 	 */
 	public void loadItemList(List<T> list) {
+		setItemsList(list);
+	}
+	
+	/**
+	 * Loads the given {@link List} into this adapter and subscribes to updates.
+	 * This will use the same reference, so any changes to the source list will
+	 * be reflected by the adapter whenever the data is repopulated. See
+	 * {@link #notifyDataSetChangedOnUIThread()}. 
+	 * @param list The {@link ObservableList} to load.
+	 */
+	public void loadItemList(ObservableList<T> list) {
 		setItemsList(list);
 	}
 	
