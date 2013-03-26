@@ -214,7 +214,7 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 								onDrawableUpdated(newDrawable.getDrawble());
 							}
 						}
-					}, view);
+					});
 				}
 			}
 		}
@@ -278,7 +278,7 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 								onDrawableUpdated(newDrawable.getDrawble());
 							}
 						}
-					}, view);
+					});
 				}
 			}
 		}
