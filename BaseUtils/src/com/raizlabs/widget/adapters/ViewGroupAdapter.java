@@ -18,6 +18,12 @@ import com.raizlabs.events.EventListener;
  */
 public abstract class ViewGroupAdapter<T> {
 	ViewGroup viewGroup;
+	/**
+	 * Gets the {@link ViewGroup} this adapter is bound to.
+	 * @return The {@link ViewGroup} this adapter is bound to.
+	 */
+	public ViewGroup getViewGroup() { return viewGroup; }
+	
 	private List<T> items;
 	
 	public interface ItemClickedListener<T> {
