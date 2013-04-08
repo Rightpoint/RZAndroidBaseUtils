@@ -28,11 +28,18 @@ public abstract class ListBasedAdapter<T> extends BaseAdapter implements List<T>
 	 * @return The {@link List} of items in this adapter.
 	 */
 	protected List<T> getItemsList() { return mList; }
+	protected void unbindList() {
+		if (mList instanceof ObservableList<?>) {
+			((ObservableList<T>) mList).getDataChangedEvent().removeListener(observableListChangedListener);
+		}
+	}
+	
 	/**
 	 * Sets the {@link List} of items in this adapter.
 	 * @param list The {@link List} of items to use.
 	 */
 	protected void setItemsList(List<T> list) {
+		unbindList();
 		if (list == null) list = new LinkedList<T>();
 		mList = list;
 		notifyDataSetChangedOnUIThread();
@@ -68,6 +75,14 @@ public abstract class ListBasedAdapter<T> extends BaseAdapter implements List<T>
 	 */
 	protected ListBasedAdapter(List<T> list) {
 		setItemsList(list);
+	}
+	
+	/**
+	 * Purges any resources from this adapter. Note that this may make the
+	 * adapter unusable.
+	 */
+	public void cleanup() {
+		unbindList();
 	}
 	
 	/**
