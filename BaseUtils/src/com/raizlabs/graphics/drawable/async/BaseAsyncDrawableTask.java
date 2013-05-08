@@ -2,13 +2,14 @@ package com.raizlabs.graphics.drawable.async;
 
 import java.lang.ref.WeakReference;
 
-import com.raizlabs.baseutils.ThreadingUtils;
-
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.raizlabs.baseutils.ThreadingUtils;
+import com.raizlabs.events.EventListener;
 
 /**
  * Base class which can be used for easy implementation of an
@@ -21,6 +22,17 @@ import android.widget.ImageView;
  * and whether it is trying to accomplish the same thing as another instance.
  */
 public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
+	
+	private EventListener<Drawable> completedListener;
+	/**
+	 * Sets an {@link EventListener} to be called when the execution of this task
+	 * is complete.
+	 * @param listener The listener to call
+	 */
+	public void setCompletedListener(EventListener<Drawable> listener) {
+		this.completedListener = listener;
+	}
+	
 	private boolean cancelled = false;
 	@Override
 	public boolean isCancelled() {
@@ -129,6 +141,8 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 		
 		// Push our new drawable through the wrapper, and ensure we are still bound
 		wrapper.update(drawable, true);
+		
+		if (completedListener != null) completedListener.onEvent(this, drawable);
 	}
 
 	/**
