@@ -3,6 +3,7 @@ package com.raizlabs.baseutils;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,4 +61,50 @@ public class IOUtils {
 	public static InputStream getInputStream(String str) {
 		return new ByteArrayInputStream(str.getBytes());
 	}
+	
+	
+	
+	/**
+	 * Deletes the file or directory at the given path using the rm shell
+	 * command.
+	 * @param path Path to the file to delete.
+	 * @param recursive True to do the delete recursively, else false.
+	 * @return True if the file existed and was deleted, or false if it didn't
+	 * exist.
+	 * @throws IOException if the shell execution fails.
+	 */
+	public static boolean deleteViaShell(String path, boolean recursive) 
+			throws IOException {
+		File file = new File(path);
+		if (file.exists()) {
+			String deleleteCommand = (recursive ? "rm -r " : "rm ") + path;
+			Runtime runtime = Runtime.getRuntime();
+			runtime.exec(deleleteCommand);
+			return true;
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * Deletes the file or directory at the given path using the rm shell
+	 * command.
+	 * @param file The {@link File} to delete.
+	 * @param recursive True to do the delete recursively, else false.
+	 * @return True if the file existed and was deleted, or false if it didn't
+	 * exist.
+	 * @throws IOException if the shell execution fails.
+	 */
+	public static boolean deleteViaShell(File file, boolean recursive)
+			throws IOException {
+		if (file.exists()) {
+			String deleleteCommand = (recursive ? "rm -r " : "rm ") 
+					+ file.getAbsolutePath();
+			Runtime runtime = Runtime.getRuntime();
+			runtime.exec(deleleteCommand);
+			return true;
+		}
+		return false;
+	}
+	
 }
