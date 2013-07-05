@@ -139,12 +139,37 @@ public abstract class BaseAsyncDrawableTask<T> implements AsyncDrawableTask<T> {
 			drawable = getCancelledDrawable();
 		}
 		
-		// Push our new drawable through the wrapper, and ensure we are still bound
-		wrapper.update(drawable, true);
+		// Set our new drawable
+		setDrawable(drawable);
 		
 		if (completedListener != null) completedListener.onEvent(this, drawable);
 	}
 
+	/**
+	 * Call this when a {@link Drawable} is loaded as the target image. This will set
+	 * the {@link Drawable} if we are still bound and haven't been cancelled yet.
+	 * @param drawable The {@link Drawable} to set.
+	 */
+	protected void onDrawableLoaded(Drawable drawable) {
+		synchronized (this) {
+			if (!isCancelled()) {
+				completed = true;
+				setDrawable(drawable);
+				
+				if (completedListener != null) completedListener.onEvent(this, drawable);
+			}
+		}
+	}
+	
+	/**
+	 * Sets the current image to the given {@link Drawable} if we are still bound
+	 * @param drawable The {@link Drawable} to set
+	 */
+	protected void setDrawable(Drawable drawable) {
+		// Push our new drawable through the wrapper, and ensure we are still bound
+		wrapper.update(drawable, true);
+	}
+	
 	/**
 	 * Interface which allows us to update different views polymorphically.
 	 * Wraps views of different types and interfaces with them appropriately.
