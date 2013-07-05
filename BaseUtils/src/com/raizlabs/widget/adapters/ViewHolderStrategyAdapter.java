@@ -14,15 +14,15 @@ import com.raizlabs.widget.utils.ViewHolderStrategyUtils;
  * @param <Item> The type of item that views will represent.
  * @param <Holder> The type of the view holder the {@link ViewHolderStrategy} uses.
  */
-public class ViewHolderStrategyAdapter<Item, Holder> extends ListBasedAdapter<Item>{
-	private ViewHolderStrategy<Item, Holder> strategy;
+public class ViewHolderStrategyAdapter<Item> extends ListBasedAdapter<Item>{
+	private ViewHolderStrategy<Item, ?> strategy;
 	
 	/**
 	 * Creates a {@link ViewHolderStrategyAdapter} that utilizes the given
 	 * {@link ViewHolderStrategy}.
 	 * @param strategy The strategy to use to create and populate views.
 	 */
-	public ViewHolderStrategyAdapter(ViewHolderStrategy<Item, Holder> strategy) {
+	public ViewHolderStrategyAdapter(ViewHolderStrategy<Item, ?> strategy) {
 		this.strategy = strategy;
 	}
 
@@ -66,7 +66,7 @@ public class ViewHolderStrategyAdapter<Item, Holder> extends ListBasedAdapter<It
 		}
 	}
 	
-	public ViewHolderStrategy<Item, Holder> getStrategy() {
+	public ViewHolderStrategy<Item, ?> getStrategy() {
 		return this.strategy;
 	}
 }
