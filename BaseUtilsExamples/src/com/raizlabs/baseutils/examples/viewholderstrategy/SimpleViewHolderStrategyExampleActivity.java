@@ -7,10 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import com.raizlabs.baseutils.examples.R;
-import com.raizlabs.widget.adapters.ViewHolderStrategyAdapter;
-import com.raizlabs.widget.utils.SimpleViewHolderStrategy;
-
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +16,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.raizlabs.baseutils.examples.R;
+import com.raizlabs.widget.adapters.ViewHolderStrategyAdapter;
+import com.raizlabs.widget.utils.SimpleViewHolderStrategy;
 
 public class SimpleViewHolderStrategyExampleActivity extends Activity {
 	/**
@@ -41,7 +41,7 @@ public class SimpleViewHolderStrategyExampleActivity extends Activity {
 	/**
 	 * The adapter that contains our data
 	 */
-	ViewHolderStrategyAdapter<RowData, RowViewHolder> adapter;
+	ViewHolderStrategyAdapter<RowData> adapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class SimpleViewHolderStrategyExampleActivity extends Activity {
 		// Construct our strategy implementation
 		StrategyImplementation strategy = new StrategyImplementation();
 		// Create an adapter based on our strategy
-		adapter = new ViewHolderStrategyAdapter<RowData, RowViewHolder>(strategy);
+		adapter = new ViewHolderStrategyAdapter<RowData>(strategy);
 		// Attach our adapter to the list view
 		listView.setAdapter(adapter);
 		
