@@ -17,6 +17,26 @@ import android.util.Log;
 public class JSONHelper {
 
 	/**
+	 * Iterates over the {@link JSONArray} defined at the given key in the
+	 * given JSON object, if one exists, and parses each element with the given
+	 * {@link JSONArrayParserDelegate}. If the delegate returns an item, it
+	 * will be added to the result list. If it does not, that index will be
+	 * skipped - no null will be added to the list.
+	 * @param array The {@link JSONArray} to parse
+	 * @param delegate The {@link JSONArrayParserDelegate} to call to parse
+	 * each object
+	 * @return A {@link List} containing all parsed objects or null if the key
+	 * didn't map to a {@link JSONArray}
+	 */
+	public static <T> List<T> parseJSONArray(JSONObject json, String key,
+			JSONArrayParserDelegate<T> delegate) {
+		JSONArray array = json.optJSONArray(key);
+		if (array == null) return null;
+		
+		return parseJSONArray(array, delegate);
+	}
+	
+	/**
 	 * Iterates over the given {@link JSONArray} and parses each element with
 	 * the given {@link JSONArrayParserDelegate}. If the delegate returns an
 	 * item, it will be added to the result list. If it does not, that index
