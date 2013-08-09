@@ -265,4 +265,9 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 		return underlyingList.toArray(array);
 	}
 	
+	@Override
+	public String toString() {
+		return "Observable(" + underlyingList.toString() + ")";
+	}
+	
 }
