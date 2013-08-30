@@ -1,5 +1,7 @@
 package com.raizlabs.imagecaching;
 
+import java.util.HashSet;
+
 import android.graphics.Bitmap;
 
 /**
@@ -22,6 +24,7 @@ public class PrefixedImageCacheAdapter implements ImageCache {
 	 */
 	private String prefix;
 	
+	private HashSet<String> addedKeys;
 	
 	/**
 	 * Creates a {@link PrefixedImageCacheAdapter} which uses the given
@@ -32,11 +35,14 @@ public class PrefixedImageCacheAdapter implements ImageCache {
 	public PrefixedImageCacheAdapter(String prefix, ImageCache cache) {
 		this.prefix = prefix;
 		this.cache = cache;
+		this.addedKeys = new HashSet<String>(); 
 	}
 	
 	@Override
 	public void addImage(String imageName, Bitmap bitmap) {
-		cache.addImage(prefix + imageName, bitmap);
+		String imageKey = prefix + imageName;
+		cache.addImage(imageKey, bitmap);
+		addedKeys.add(imageKey);
 	}
 
 	@Override
@@ -46,11 +52,16 @@ public class PrefixedImageCacheAdapter implements ImageCache {
 
 	@Override
 	public Bitmap remove(String imageName) {
-		return cache.remove(prefix + imageName);
+		String imageKey = prefix + imageName;
+		addedKeys.remove(imageKey);
+		return cache.remove(imageKey);
 	}
 
 	@Override
 	public void purge() {
-		cache.purge();
+		for (String key : addedKeys) {
+			cache.remove(key);
+		}
+		addedKeys.clear();
 	}
 }
