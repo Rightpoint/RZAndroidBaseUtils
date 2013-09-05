@@ -241,6 +241,7 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 	@Override
 	public T set(int location, T object) {
 		T result = underlyingList.set(location, object);
+		modified = true;
 		if (!runningTransaction) notifyDataSetChanged();
 		return result;
 	}
