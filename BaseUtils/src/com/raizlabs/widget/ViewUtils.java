@@ -1,11 +1,33 @@
 package com.raizlabs.widget;
 
 import android.content.res.Resources;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.TextView;
 
 public class ViewUtils {
+	
+	/**
+	 * Returns the text for a given {@link textView} or else null if
+	 * the textView is null or has no text within.
+	 * @param textView The textView whose text should be returned
+	 * @return the text within the textView or null
+	 */
+	public static CharSequence getTextOrNull(TextView textView) {
+		if (textView == null) return null;
+		
+	    CharSequence text = textView.getText();
+	    return !TextUtils.isEmpty(text) ? text : null;
+	}
+	
+	/**
+	 * Overload for #getTextOrNull(TextView) which returns a {@link String}
+	 */
+	public static String getStringTextOrNull(TextView textView) {
+		return (String) getTextOrNull(textView);
+	}
 
 	/**
 	 * Converts the given value in density-independent pixels into raw pixels
