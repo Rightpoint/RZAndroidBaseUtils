@@ -25,9 +25,9 @@ public class ViewUtils {
 	/**
 	 * Returns the a String with the text for a given {@link textView} 
 	 * or else null if the textView is null or has no text within.
-	 * 
+	 * <br/><br/>
 	 * Overload for {@link #getTextOrNull(TextView)} which returns a {@link String}
-	 * 
+	 * <br/><br/>
 	 * @param textView The textView whose text should be returned
 	 * @return the a String of the text within the textView or null
 	 */
