@@ -111,6 +111,47 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 		if (!runningTransaction) notifyDataSetChanged();
 	}
 	
+
+	/**
+	 * Update this list with the contents of another.  Replaces any duplicate items in this list with
+	 * the items from the {@code sourceList}.  Does not remove items from this list.
+	 * @param sourceList the list to update this list with.
+	 */
+	public void updateList(List<T> sourceList) {		
+		removeAll(sourceList);
+		addAll(sourceList);
+	}
+	
+	/**
+	 * Add an item to the list or replace a found instance of the item.  Depends on the item's use
+	 * of the {@code equals()} method to check equivalence
+	 * @param item The item to insert of replace an instance of.
+	 * @param replaceAll If all found instances of the item should be replace or only the first.
+	 */
+	public void addToListOrReplace(T item, boolean replaceAll) {
+		boolean foundItem = false;
+		
+		if (item == null) {
+			return;
+		} else { 
+			ListIterator<T> it = this.listIterator();
+			while (it.hasNext()) {
+				int nextIndex = it.nextIndex();
+				if (it.next().equals(item)) {
+					set(nextIndex, item);
+					
+					if (replaceAll) {
+						foundItem = true;
+					} else {
+						return;
+					}
+				}
+			}
+		}
+
+		if (!foundItem) { add(item); }
+	}	
+	
 	@Override
 	public boolean add(T object) {
 		boolean result = underlyingList.add(object);
