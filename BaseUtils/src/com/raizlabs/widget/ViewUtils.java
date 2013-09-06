@@ -32,7 +32,7 @@ public class ViewUtils {
 	 * @return the a String of the text within the textView or null
 	 */
 	public static String getStringTextOrNull(TextView textView) {
-		return (String) getTextOrNull(textView);
+		return getTextOrNull(textView).toString();
 	}
 
 	/**
