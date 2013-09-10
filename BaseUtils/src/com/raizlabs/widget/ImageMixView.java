@@ -55,6 +55,7 @@ public class ImageMixView extends View {
 		bitmap1 = bmp;
 		src1 = new Rect(0, 0, bitmap1.getWidth(), bitmap1.getHeight());
 		requestLayout();
+		postInvalidate();
 	}
 	/**
 	 * Sets the first image of the mix.
@@ -71,6 +72,7 @@ public class ImageMixView extends View {
 	public void setSecondImage(Bitmap bmp) {
 		bitmap2 = bmp;
 		src2 = new Rect(0, 0, bitmap2.getWidth(), bitmap2.getHeight());
+		postInvalidate();
 	}
 	/**
 	 * Sets the second image of the mix.
