@@ -113,21 +113,22 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 	
 
 	/**
-	 * Update this list with the contents of another.  Replaces any duplicate items in this list with
-	 * the items from the {@code sourceList}.  Does not remove items from this list.
+	 * Set the underlying list to match the contents from the given {@code list}.
+	 * Replaces any duplicate items in this list with the items from 
+	 * the {@code list}.  Does not remove items from this list.
 	 * @param sourceList the list to update this list with.
 	 */
-	public void updateList(List<T> sourceList) {		
-		removeAll(sourceList);
-		addAll(sourceList);
+	public void loadFromList(List<T> list) {		
+		removeAll(list);
+		addAll(list);
 	}
 	
 	/**
-	 * Add an item to the list or replace a found instance of the item.  Depends on the item's use
-	 * of the {@code equals()} method to check equivalence
-	 * @param item The item to insert of replace an instance of.
-	 * @param replaceAll If all found instances of the item should be replace or only the first.
-	 */
+	* Replaces any existing instances of the given item (as defined by {@link Object#equals()})
+	* or appends the item to the end of the list if not found.
+	* @param item The item to add
+	* @param replaceAll True to replace all instances of the item, false to only replace the first instance in the list.
+	*/
 	public void addToListOrReplace(T item, boolean replaceAll) {
 		boolean foundItem = false;
 		
