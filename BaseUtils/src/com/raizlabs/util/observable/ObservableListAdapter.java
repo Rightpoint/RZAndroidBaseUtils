@@ -130,8 +130,7 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 			int nextIndex = it.nextIndex();
 			int indexOfObjectInLoadList = updateFromList.indexOf(it.next());
 			if (indexOfObjectInLoadList != -1) {
-				set(nextIndex, updateFromList.get(indexOfObjectInLoadList));
-				updateFromList.remove(indexOfObjectInLoadList);
+				set(nextIndex, updateFromList.remove(indexOfObjectInLoadList));
 			}
 		}
 		
