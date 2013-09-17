@@ -115,11 +115,24 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 	/**
 	 * Set the underlying list to match the contents from the given {@code list}.
 	 * Replaces any duplicate items in this list with the items from 
-	 * the {@code list}.  Does not remove items from this list.
+	 * the {@code list} while preserving order.
 	 * @param sourceList the list to update this list with.
 	 */
-	public void loadFromList(List<T> list) {		
-		removeAll(list);
+	public void loadFromList(List<T> list) {
+		
+		// Loop through the current list and find duplicate entries.
+		// Replace them in the current list while removing them from
+		// the list that is being loaded.
+		ListIterator<T> it = this.listIterator();
+		while (it.hasNext()) {
+			int indexOfObjectInLoadList = list.indexOf(it.next());
+			if (indexOfObjectInLoadList != -1) {
+				set(it.nextIndex(), list.get(indexOfObjectInLoadList));
+				list.remove(indexOfObjectInLoadList);
+			}
+		}
+		
+		// Add all remaining, non-duplicate, items
 		addAll(list);
 	}
 	
