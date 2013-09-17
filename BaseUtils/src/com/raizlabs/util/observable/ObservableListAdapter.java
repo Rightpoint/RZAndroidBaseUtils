@@ -1,5 +1,6 @@
 package com.raizlabs.util.observable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -110,6 +111,62 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 		modified = true;
 		if (!runningTransaction) notifyDataSetChanged();
 	}
+	
+
+	/**
+	 * Updates the underlying list to reflect the contents of the given {@code list} 
+	 * by replacing elements which already exist and appending those that do not.
+	 * 
+	 * @param list the data to update the underlying list with.
+	 */
+	public void updateFromList(List<T> list) {
+		ArrayList<T>updateFromList = new ArrayList<T>(list);
+		
+		// Loop through the current list and find duplicate entries.
+		// Replace them in the current list while removing them from
+		// the list that is being loaded.
+		ListIterator<T> it = this.listIterator();
+		while (it.hasNext()) {
+			int nextIndex = it.nextIndex();
+			int indexOfObjectInLoadList = updateFromList.indexOf(it.next());
+			if (indexOfObjectInLoadList != -1) {
+				set(nextIndex, updateFromList.remove(indexOfObjectInLoadList));
+			}
+		}
+		
+		// Add all remaining, non-duplicate, items
+		addAll(updateFromList);
+	}
+	
+	/**
+	* Replaces any existing instances of the given item (as defined by {@link Object#equals()})
+	* or appends the item to the end of the list if not found.
+	* @param item The item to add
+	* @param replaceAll True to replace all instances of the item, false to only replace the first instance in the list.
+	*/
+	public void addToListOrReplace(T item, boolean replaceAll) {
+		boolean foundItem = false;
+		
+		if (item == null) {
+			return;
+		} else { 
+			ListIterator<T> it = this.listIterator();
+			while (it.hasNext()) {
+				int nextIndex = it.nextIndex();
+				if (it.next().equals(item)) {
+					set(nextIndex, item);
+					
+					if (replaceAll) {
+						foundItem = true;
+					} else {
+						return;
+					}
+				}
+			}
+		}
+
+		if (!foundItem) { add(item); }
+	}	
 	
 	@Override
 	public boolean add(T object) {
