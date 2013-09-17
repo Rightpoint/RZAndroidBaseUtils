@@ -114,10 +114,10 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 	
 
 	/**
-	 * Set the underlying list to match the contents from the given {@code list}.
-	 * Replaces any duplicate items in this list with the items from 
-	 * the {@code list} while preserving order.
-	 * @param sourceList the list to update this list with.
+	 * Updates the underlying list to reflect the contents of the given {@code list} 
+	 * by replacing elements which already exist and appending those that do not.
+	 * 
+	 * @param list the data to update the underlying list with.
 	 */
 	public void updateFromList(List<T> list) {
 		ArrayList<T>updateFromList = new ArrayList<T>(list);
