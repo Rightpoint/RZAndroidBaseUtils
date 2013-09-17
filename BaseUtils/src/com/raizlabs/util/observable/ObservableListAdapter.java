@@ -1,5 +1,6 @@
 package com.raizlabs.util.observable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -118,22 +119,24 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 	 * the {@code list} while preserving order.
 	 * @param sourceList the list to update this list with.
 	 */
-	public void loadFromList(List<T> list) {
+	public void updateFromList(List<T> list) {
+		ArrayList<T>updateFromList = new ArrayList<T>(list);
 		
 		// Loop through the current list and find duplicate entries.
 		// Replace them in the current list while removing them from
 		// the list that is being loaded.
 		ListIterator<T> it = this.listIterator();
 		while (it.hasNext()) {
-			int indexOfObjectInLoadList = list.indexOf(it.next());
+			int nextIndex = it.nextIndex();
+			int indexOfObjectInLoadList = updateFromList.indexOf(it.next());
 			if (indexOfObjectInLoadList != -1) {
-				set(it.nextIndex(), list.get(indexOfObjectInLoadList));
-				list.remove(indexOfObjectInLoadList);
+				set(nextIndex, updateFromList.get(indexOfObjectInLoadList));
+				updateFromList.remove(indexOfObjectInLoadList);
 			}
 		}
 		
 		// Add all remaining, non-duplicate, items
-		addAll(list);
+		addAll(updateFromList);
 	}
 	
 	/**
