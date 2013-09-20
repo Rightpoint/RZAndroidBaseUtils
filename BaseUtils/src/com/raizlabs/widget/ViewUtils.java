@@ -72,4 +72,24 @@ public class ViewUtils {
 		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
 				dips, metrics);
 	}
+	
+	/**
+	 * Sets the given {@link View}s visibility to {@link View#VISIBLE} or
+	 * {@link View#GONE} depending on the specified value.
+	 * @param view The {@link View} to change the visibility of.
+	 * @param visible True to make the view VISIBLE, false to make it GONE.
+	 */
+	public static void setVisibleOrGone(View view, boolean visible) {
+		view.setVisibility(visible ? View.VISIBLE : View.GONE);
+	}
+	
+	/**
+	 * Sets the given {@link View}s visibility to {@link View#VISIBLE} or
+	 * {@link View#INVISIBLE} depending on the specified value.
+	 * @param view The {@link View} to change the visibility of.
+	 * @param visible True to make the view VISIBLE, false to make it INVISIBLE.
+	 */
+	public static void setVisibleOrInvisible(View view, boolean visible) {
+		view.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+	}
 }
