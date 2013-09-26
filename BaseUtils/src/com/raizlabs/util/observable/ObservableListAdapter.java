@@ -211,6 +211,18 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 		modified = true;
 		if (!runningTransaction) notifyDataSetChanged();
 	}
+	
+	/**
+	 * Clear a list and add all the items from a different one with only
+	 * one notify event.
+	 * @param collection The collection of items to enter into the list
+	 */
+	public void clearAndAdd(Collection<? extends T> collection) {
+		underlyingList.clear();
+		underlyingList.addAll(collection);
+		modified = true;
+		if (!runningTransaction) notifyDataSetChanged();
+	}
 
 	@Override
 	public boolean contains(Object object) {
