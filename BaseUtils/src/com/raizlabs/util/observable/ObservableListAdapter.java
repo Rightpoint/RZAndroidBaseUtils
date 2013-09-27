@@ -55,10 +55,11 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 	}
 	
 	/**
-	 * Raises the data changed event, notifying observers that the data has changed.
+	 * Raises the data changed event, notifying observers that the data has
+	 * changed, only if no transaction is currently being run.
 	 */
 	public void notifyDataSetChanged() {
-		if (modified) {
+		if (modified && !runningTransaction) {
 			dataChangedEvent.raiseEvent(this, this);
 		}
 		modified = false;
@@ -88,6 +89,7 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 	public void endTransaction() {
 		if (runningTransaction) {
 			runningTransaction = false;
+			notifyDataSetChanged();
 		} else {
 			throw new IllegalStateException("Tried to end a transaction when no transaction was running!");
 		}
