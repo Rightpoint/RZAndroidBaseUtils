@@ -170,6 +170,18 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 		if (!foundItem) { add(item); }
 	}	
 	
+	/**
+	 * Removes all items from this list and adds all the given items,
+	 * effectively replacing the entire list.
+	 * @param contents The items to set as the new contents.
+	 */
+	public void replaceContents(Collection<? extends T> contents) {
+		beginTransaction();
+		clear();
+		addAll(contents);
+		endTransaction();
+	}
+	
 	@Override
 	public boolean add(T object) {
 		boolean result = underlyingList.add(object);
