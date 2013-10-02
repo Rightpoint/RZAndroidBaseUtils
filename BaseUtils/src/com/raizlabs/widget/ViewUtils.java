@@ -92,4 +92,34 @@ public class ViewUtils {
 	public static void setVisibleOrInvisible(View view, boolean visible) {
 		view.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
 	}
+	
+	/**
+	 * Returns true if the given {@link View}s visibility is set to
+	 * {@link View#VISIBLE}.
+	 * @param view The {@link View} to check.
+	 * @return True if the view is set to VISIBLE.
+	 */
+	public static boolean isVisible(View view) {
+		return view.getVisibility() == View.VISIBLE;
+	}
+	
+	/**
+	 * Returns true if the given {@link View}s visibility is set to
+	 * {@link View#INVISIBLE}.
+	 * @param view The {@link View} to check.
+	 * @return True if the view is set to INVISIBLE.
+	 */
+	public static boolean isInvisible(View view) {
+		return view.getVisibility() == View.INVISIBLE;
+	}
+	
+	/**
+	 * Returns true if the given {@link View}s visibility is set to
+	 * {@link View#GONE}.
+	 * @param view The {@link View} to check.
+	 * @return True if the view is set to GONE.
+	 */
+	public static boolean isGone(View view) {
+		return view.getVisibility() == View.GONE;
+	}
 }
