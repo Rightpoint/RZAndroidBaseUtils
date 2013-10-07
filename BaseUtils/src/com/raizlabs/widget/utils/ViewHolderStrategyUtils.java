@@ -19,11 +19,37 @@ public class ViewHolderStrategyUtils {
 	public static final int VIEWHOLDER_TAG_ID = R.id.com_raizlabs_viewholderTagID;
 
 	/**
+	 * Gets and populates a view for the given item, reusing the given view if
+	 * it is non-null. This assumes that the convert view is a valid view for
+	 * this item if it is non-null. If the convert view is null, a new view
+	 * will be created.
+	 * @param strategy The strategy to use to do the population.
+	 * @param item The item to populate a view for.
+	 * @param convertView A view which may be reused to display the item or
+	 * null to create a new one.
+	 * @param container The container the view will eventually be added to,
+	 * though this implementation will not add it.
+	 * @return The populated view.
+	 */
+	public static <Item, Holder> View createOrConvertView(
+			ViewHolderStrategy<Item, Holder> strategy,
+			Item item,
+			View convertView,
+			ViewGroup container) {
+		if (convertView == null) {
+			return createAndPopulateView(strategy, item, container);
+		} else {
+			populateView(strategy, convertView, item);
+			return convertView;
+		}
+	}
+	
+	/**
 	 * Creates and populates a view for the given item and returns it.
 	 * @param strategy The strategy to use to do the creation and population.
 	 * @param item The item to populate a view for.
-	 * @param container The container the view will eventually added to, though this
-	 * implementation will not add it. 
+	 * @param container The container the view will eventually be added to,
+	 * though this implementation will not add it. 
 	 * @return The populated view.
 	 */
 	public static <Item, Holder> View createAndPopulateView(
