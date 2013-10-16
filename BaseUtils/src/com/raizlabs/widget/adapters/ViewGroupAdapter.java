@@ -6,9 +6,8 @@ import java.util.List;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-
-import com.raizlabs.events.EventListener;
 
 /**
  * Class which binds a set of data to {@link View}s in a given {@link ViewGroup}.
@@ -32,10 +31,29 @@ public abstract class ViewGroupAdapter<T> {
 	private ItemClickedListener<T> itemClickedListener;
 	/**
 	 * Sets the listener to be called when an item is clicked.
-	 * @param listener The {@link EventListener} to call.
+	 * @param listener The listener to call.
 	 */
 	public void setItemClickedListener(ItemClickedListener<T> listener) {
 		this.itemClickedListener = listener;
+	}
+	
+	public interface ItemLongClickedListener<T> {
+		/**
+		 * Called when an item in the adapter is long clicked.
+		 * @param adapter The adapter whose item was long clicked.
+		 * @param item The item which was long clicked.
+		 * @param index The index of the long clicked item
+		 * @return true if the callback consumed the long click, false otherwise.
+		 */
+		public boolean onItemLongClicked(ViewGroupAdapter<T> adapter, T item, int index);
+	}
+	private ItemLongClickedListener<T> itemLongClickedListener;
+	/**
+	 * Sets the listener to be called when an item is long clicked.
+	 * @param listener The listener to call.
+	 */
+	public void setItemLongClickedListener(ItemLongClickedListener<T> listener) {
+		this.itemLongClickedListener = listener;
 	}
 	
 	private LayoutInflater getLayoutInflater() {
@@ -137,6 +155,16 @@ public abstract class ViewGroupAdapter<T> {
 					final int index = viewGroup.indexOfChild(v);
 					itemClickedListener.onItemClicked(ViewGroupAdapter.this, item, index);
 				}
+			}
+		});
+		view.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				if (itemLongClickedListener != null) {
+					final int index = viewGroup.indexOfChild(v);
+					return itemLongClickedListener.onItemLongClicked(ViewGroupAdapter.this, item, index);
+				}
+				return false;
 			}
 		});
 	}
