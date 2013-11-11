@@ -48,6 +48,7 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 	 * @param underlyingList The list which will back this adapter
 	 */
 	public ObservableListAdapter(List<T> underlyingList) {
+		if (underlyingList == null) underlyingList = new LinkedList<T>();
 		this.underlyingList = underlyingList;
 		runningTransaction = false;
 		modified = false;
