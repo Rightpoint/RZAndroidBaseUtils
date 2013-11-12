@@ -69,4 +69,9 @@ public class ViewHolderStrategyAdapter<Item> extends ListBasedAdapter<Item>{
 	public ViewHolderStrategy<Item, ?> getStrategy() {
 		return this.strategy;
 	}
+	
+	public void setStrategy(ViewHolderStrategy<Item, ?> strategy) {
+		this.strategy = strategy;
+		notifyDataSetChangedOnUIThread();
+	}
 }
