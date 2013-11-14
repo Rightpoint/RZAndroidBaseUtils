@@ -25,6 +25,10 @@ public abstract class ViewGroupAdapter<T> {
 	
 	private List<T> items;
 	
+	private boolean createClickListeners = true;
+	public void setCreateClickListeners(boolean createClickListeners) { this.createClickListeners = createClickListeners; }
+	public boolean createsClickListeners() { return createClickListeners; }
+	
 	public interface ItemClickedListener<T> {
 		public void onItemClicked(ViewGroupAdapter<T> adapter, T item, int index);
 	}
@@ -148,25 +152,28 @@ public abstract class ViewGroupAdapter<T> {
 		items.add(item);
 		View view = createView(item, inflater, viewGroup);
 		viewGroup.addView(view);
-		view.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (itemClickedListener != null) {
-					final int index = viewGroup.indexOfChild(v);
-					itemClickedListener.onItemClicked(ViewGroupAdapter.this, item, index);
+		
+		if (createClickListeners) {
+			view.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (itemClickedListener != null) {
+						final int index = viewGroup.indexOfChild(v);
+						itemClickedListener.onItemClicked(ViewGroupAdapter.this, item, index);
+					}
 				}
-			}
-		});
-		view.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View v) {
-				if (itemLongClickedListener != null) {
-					final int index = viewGroup.indexOfChild(v);
-					return itemLongClickedListener.onItemLongClicked(ViewGroupAdapter.this, item, index);
+			});
+			view.setOnLongClickListener(new OnLongClickListener() {
+				@Override
+				public boolean onLongClick(View v) {
+					if (itemLongClickedListener != null) {
+						final int index = viewGroup.indexOfChild(v);
+						return itemLongClickedListener.onItemLongClicked(ViewGroupAdapter.this, item, index);
+					}
+					return false;
 				}
-				return false;
-			}
-		});
+			});
+		}
 	}
 	
 	/**
