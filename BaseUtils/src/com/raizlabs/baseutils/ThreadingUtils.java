@@ -48,8 +48,9 @@ public class ThreadingUtils {
 	 * on the UI thread. Otherwise, the {@link Runnable} will be posted using
 	 * the given {@link View}.
 	 * <br><br>
-	 * WARNING: This action will never be executed if the view is not attached
-	 * to a window. See {@link View#post(Runnable)}.
+	 * NOTE: This action will be forced onto the UI thread independent of the
+	 * handler view if the view cannot post it to the UI thread itself (i.e.
+	 * the view is not attached to a window yet). 
 	 * @see #runOnUIThread(Runnable)
 	 * @see #runOnUIThread(Runnable, Handler)
 	 * @param action The {@link Runnable} to execute.
@@ -63,7 +64,9 @@ public class ThreadingUtils {
 			action.run();
 			return true;
 		} else {
-			v.post(action);
+			if (!v.post(action)) {
+				runOnUIThread(action);
+			}
 			return false;
 		}
 	}
@@ -74,8 +77,9 @@ public class ThreadingUtils {
 	 * on the UI thread. Otherwise, the {@link Runnable} will be posted using
 	 * the given {@link View}.
 	 * <br><br>
-	 * WARNING: This action will never be executed if the view is not attached
-	 * to a window. See {@link View#post(Runnable)}.
+	 * NOTE: This action will be forced onto the UI thread independent of the
+	 * handler view if the view cannot post it to the UI thread itself (i.e.
+	 * the view is not attached to a window yet). 
 	 * @see #runOnUIThread(Runnable)
 	 * @see #runOnUIThread(Runnable, Handler)
 	 * @param v A {@link View} to use to post the {@link Runnable} if this
@@ -84,14 +88,9 @@ public class ThreadingUtils {
 	 * @return True if the action was already executed before this function
 	 * returned, or false if the action was posted.
 	 */
+	@Deprecated
 	public static boolean runOnUIThread(Runnable action, View v) {
-		if (isOnUIThread()) {
-			action.run();
-			return true;
-		} else {
-			v.post(action);
-			return false;
-		}
+		return runOnUIThread(v, action);
 	}
 	
 	/**
@@ -106,14 +105,9 @@ public class ThreadingUtils {
 	 * @return True if the action was already executed before this function
 	 * returned, or false if the action was posted to the {@link Handler}.
 	 */
+	@Deprecated
 	public static boolean runOnUIThread(Runnable action, Handler handler) {
-		if (isOnUIThread()) {
-			action.run();
-			return true;
-		} else {
-			handler.post(action);
-			return false;
-		}
+		return runOnUIThread(handler, action);
 	}
 	
 	/**
@@ -133,7 +127,9 @@ public class ThreadingUtils {
 			action.run();
 			return true;
 		} else {
-			handler.post(action);
+			if (!handler.post(action)) {
+				runOnUIThread(action);
+			}
 			return false;
 		}
 	}
