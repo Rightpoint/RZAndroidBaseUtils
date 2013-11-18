@@ -24,6 +24,11 @@ public abstract class ViewGroupAdapter<T> {
 	public ViewGroup getViewGroup() { return viewGroup; }
 	
 	private List<T> items;
+	/**
+	 * Gets the list of items currently loaded into this adapter.
+	 * @return The list of items.
+	 */
+	public List<T> getCurrentItems() { return items; }
 	
 	private boolean createClickListeners = true;
 	public void setCreateClickListeners(boolean createClickListeners) { this.createClickListeners = createClickListeners; }
