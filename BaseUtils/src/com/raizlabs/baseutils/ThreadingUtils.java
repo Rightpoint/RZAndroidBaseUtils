@@ -48,9 +48,11 @@ public class ThreadingUtils {
 	 * on the UI thread. Otherwise, the {@link Runnable} will be posted using
 	 * the given {@link View}.
 	 * <br><br>
-	 * NOTE: This action will be forced onto the UI thread independent of the
-	 * handler view if the view cannot post it to the UI thread itself (i.e.
-	 * the view is not attached to a window yet). 
+	 * NOTE: This method will attempt to force the action onto the UI thread.
+	 * <br><br>
+	 * WARNING: The action may still not be taken if the view's 
+	 * {@link View#post(Runnable)} method returns true, but doesn't execute. 
+	 * (This is the case when the view is not attached to a window). 
 	 * @see #runOnUIThread(Runnable)
 	 * @see #runOnUIThread(Runnable, Handler)
 	 * @param action The {@link Runnable} to execute.
@@ -77,9 +79,11 @@ public class ThreadingUtils {
 	 * on the UI thread. Otherwise, the {@link Runnable} will be posted using
 	 * the given {@link View}.
 	 * <br><br>
-	 * NOTE: This action will be forced onto the UI thread independent of the
-	 * handler view if the view cannot post it to the UI thread itself (i.e.
-	 * the view is not attached to a window yet). 
+	 * NOTE: This method will attempt to force the action onto the UI thread.
+	 * <br><br>
+	 * WARNING: The action may still not be taken if the view's 
+	 * {@link View#post(Runnable)} method returns true, but doesn't execute. 
+	 * (This is the case when the view is not attached to a window). 
 	 * @see #runOnUIThread(Runnable)
 	 * @see #runOnUIThread(Runnable, Handler)
 	 * @param v A {@link View} to use to post the {@link Runnable} if this
