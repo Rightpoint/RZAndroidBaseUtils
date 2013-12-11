@@ -202,7 +202,10 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 
 	@Override
 	public boolean addAll(Collection<? extends T> arg0) {
-		boolean result = underlyingList.addAll(arg0);
+		boolean result = false;
+		if (underlyingList != null && arg0 != null) {
+			result = underlyingList.addAll(arg0);
+		}
 		if (result) {
 			modified = true;
 			if (!runningTransaction) notifyDataSetChanged();
@@ -212,7 +215,10 @@ public class ObservableListAdapter<T> implements ObservableList<T> {
 
 	@Override
 	public boolean addAll(int arg0, Collection<? extends T> arg1) {
-		boolean result = underlyingList.addAll(arg0, arg1);
+		boolean result = false;
+		if (underlyingList != null && arg1 != null) {
+			result = underlyingList.addAll(arg0, arg1);
+		}
 		if (result) {
 			modified = true;
 			if (!runningTransaction) notifyDataSetChanged();
