@@ -26,4 +26,14 @@ public class StringUtils {
 		
 		return builder.toString();
 	}
+	
+	/**
+	 * Returns true if the given string is null, the empty string, or the
+	 * string "null".
+	 * @param str The string to check.
+	 * @return True if the string is null or empty.
+	 */
+	public static boolean isNullOrEmpty(String str) {
+		return (str == null) || (str.equals("")) || (str.equals("null"));
+	}
 }
