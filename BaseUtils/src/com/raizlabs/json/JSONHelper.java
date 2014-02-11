@@ -15,14 +15,14 @@ import android.util.Log;
  * @author Dylan James
  */
 public class JSONHelper {
-
 	/**
 	 * Iterates over the {@link JSONArray} defined at the given key in the
 	 * given JSON object, if one exists, and parses each element with the given
 	 * {@link JSONArrayParserDelegate}. If the delegate returns an item, it
 	 * will be added to the result list. If it does not, that index will be
 	 * skipped - no null will be added to the list.
-	 * @param array The {@link JSONArray} to parse
+	 * @param json The {@link JSONObject} to get the array from
+	 * @param key The key to look for the array under
 	 * @param delegate The {@link JSONArrayParserDelegate} to call to parse
 	 * each object
 	 * @return A {@link List} containing all parsed objects or null if the key
