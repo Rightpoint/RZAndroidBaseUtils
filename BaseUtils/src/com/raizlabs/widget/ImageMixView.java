@@ -1,12 +1,15 @@
 package com.raizlabs.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.raizlabs.baseutils.R;
 
 /**
  * View which mixes between two images by showing some portion of one image and
@@ -101,18 +104,38 @@ public class ImageMixView extends View {
 	
 	public ImageMixView(Context context) {
 		super(context);
-		init();
+		init(context, null);
 	}
 	public ImageMixView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		init();
+		init(context, attrs);
 	}
 	public ImageMixView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		init();
+		init(context, attrs);
 	}
 	
-	private void init() {
+	private void init(Context context, AttributeSet attrs) {
+		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ImageMixView);
+		
+		int firstImageResource = -1;
+		int secondImageResource = -1;
+		
+		try {
+			firstImageResource = a.getResourceId(R.styleable.ImageMixView_firstImageSrc, -1);
+			secondImageResource = a.getResourceId(R.styleable.ImageMixView_secondImageSrc, -1);
+		} finally {
+			a.recycle();
+		}
+		
+		if (firstImageResource > 0) {
+			setFirstImageResource(firstImageResource);
+		}
+		
+		if (secondImageResource > 0) {
+			setSecondImageResource(secondImageResource);
+		}
+		
 		setMixDirection(MixDirection.VERTICAL);
 		setMixValue(0);
 		dst1 = new Rect();
