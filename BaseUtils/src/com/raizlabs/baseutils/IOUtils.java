@@ -78,7 +78,7 @@ public class IOUtils {
 		
 		try {
 			int bytesRead;
-			while ((bytesRead = input.read()) != -1) {
+			while ((bytesRead = input.read(buffer)) != -1) {
 				output.write(buffer, 0, bytesRead);
 			}
 			
