@@ -2,11 +2,15 @@ package com.raizlabs.baseutils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+
+import android.util.Log;
 
 public class IOUtils {
 
@@ -34,6 +38,55 @@ public class IOUtils {
 			safeClose(reader);
 		}
 		return sb.toString();
+	}
+	
+	/**
+	 * Reads the given input stream into a byte array. Note that this is done
+	 * entirely in memory, so the input should not be very large.
+	 * @param input The stream to read.
+	 * @return The byte array containing all the data from the input stream or
+	 * null if there was a problem.
+	 */
+	public static byte[] readStreamBytes(InputStream input) {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		if (copyStream(input, outputStream)) {
+			return outputStream.toByteArray();
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Feeds the entire input stream into the output stream.
+	 * @param input The stream to copy from.
+	 * @param output The stream to copy into.
+	 * @return True if the copy succeeded, false if it failed.
+	 */
+	public static boolean copyStream(InputStream input, OutputStream output) {
+		return copyStream(input, output, 4096);
+	}
+	
+	/**
+	 * Feeds the entire input stream into the output stream.
+	 * @param input The stream to copy from.
+	 * @param output The stream to copy into.
+	 * @param bufferSize The size of the buffer to use.
+	 * @return True if the copy succeeded, false if it failed.
+	 */
+	public static boolean copyStream(InputStream input, OutputStream output, int bufferSize) {
+		byte[] buffer = new byte[bufferSize];
+		
+		try {
+			int bytesRead;
+			while ((bytesRead = input.read(buffer)) != -1) {
+				output.write(buffer, 0, bytesRead);
+			}
+			
+			return true;
+		} catch (IOException e) {
+			Log.w(IOUtils.class.getSimpleName(), "Error copying stream", e);
+			return false;
+		}
 	}
 
 	/**
