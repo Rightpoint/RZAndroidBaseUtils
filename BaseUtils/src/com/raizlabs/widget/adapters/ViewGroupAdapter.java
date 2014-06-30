@@ -149,8 +149,21 @@ public abstract class ViewGroupAdapter<T> {
 	 */
 	public T removeAt(int position) {
 		T item = items.remove(position);
-		viewGroup.removeViewAt(position);
+		View view = getViewForIndex(position);
+		viewGroup.removeView(view);
 		return item;
+	}
+	
+	/**
+	 * Finds the view in the {@link ViewGroup} for the given position.
+	 * Default implementation passes this call through to {@link ViewGroup#getChildAt(int)}.
+	 * Override this method if your child implementation is customizing the
+	 * arrangement or positions of child views in this adapter.
+	 * @param position The position of the view you would like to retrieve
+	 * @return The {@link View} at the given position in the {@link ViewGroup}.
+	 */
+	public View getViewForIndex(int position) {
+		return viewGroup.getChildAt(position);
 	}
 	
 	protected void addItem(final T item, LayoutInflater inflater) {
