@@ -57,6 +57,13 @@ public class MappableSet<T> {
 		return members.contains(item);
 	}
 	
+	/**
+	 * @return The number of items in this set.
+	 */
+	public int size() {
+		return members.size();
+	}
+	
 
 	/**
 	 * Calls the given {@link Delegate} on all items in the set. Items may be
