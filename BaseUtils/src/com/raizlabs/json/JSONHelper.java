@@ -1,6 +1,7 @@
 package com.raizlabs.json;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -16,6 +17,37 @@ import android.util.Log;
  * @author Dylan James
  */
 public class JSONHelper {
+	
+	/**
+	 * Delegate which is executed on individual keys of a {@link JSONObject}. 
+	 */
+	public interface JSONKeyDelegate {
+		/**
+		 * Called to execute this delegate on the given key.
+		 * @param json The JSONObject the key belongs to.
+		 * @param key The key to handle.
+		 */
+		public void execute(JSONObject json, String key);
+	}
+	
+	/**
+	 * Runs the given delegate on all of the keys in the given JSON object.
+	 * @param json The JSON whose keys to run over.
+	 * @param delegate The delegate to run on each key.
+	 */
+	public static void runOverKeys(JSONObject json, JSONKeyDelegate delegate) {
+		if (json != null) {
+			// JSON uses a set of Strings and returns an Iterator<String>
+			// but doesn't clarify in the method definition.
+			// Scary, but always works under the current implementation.
+			@SuppressWarnings("unchecked")
+			Iterator<String> iterator = json.keys();
+			while (iterator.hasNext()) {
+				delegate.execute(json, iterator.next());
+			}
+		}
+	}
+	
 	/**
 	 * Iterates over the {@link JSONArray} defined at the given key in the
 	 * given JSON object, if one exists, and parses each element with the given
