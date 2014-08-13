@@ -1,5 +1,6 @@
 package com.raizlabs.widget;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -122,4 +123,18 @@ public class ViewUtils {
 	public static boolean isGone(View view) {
 		return view.getVisibility() == View.GONE;
 	}
+
+    /**
+     * Returns the height of the actionBar.
+     * @param context
+     * @return height, in pixels, of the {@link android.app.ActionBar}
+     */
+    public static int getActionBarHeight(Context context){
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if ((context != null) && (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
+        }
+        return actionBarHeight;
+    }
 }
