@@ -20,6 +20,8 @@ public class ObservableListWrapper<T> implements ObservableList<T> {
 	 */
 	protected List<T> underlyingList;
 	protected SimpleListObserver<T> listObserver;
+	private boolean runningTransaction;
+	private boolean transactionModified;
 
 	@Override
 	public ListObserver<T> getListObserver() { return listObserver; }
@@ -288,18 +290,62 @@ public class ObservableListWrapper<T> implements ObservableList<T> {
 	}
 	
 	protected void onItemRangeChanged(int startPosition, int itemCount) {
-		this.listObserver.notifyItemRangeChanged(startPosition, itemCount);
+		if (tryTransactionModification()) {
+			this.listObserver.notifyItemRangeChanged(startPosition, itemCount);
+		}
 	}
 	
 	protected void onItemRangeInserted(int startPosition, int itemCount) {
-		this.listObserver.notifyItemRangeInserted(startPosition, itemCount);
+		if (tryTransactionModification()) {
+			this.listObserver.notifyItemRangeInserted(startPosition, itemCount);
+		}
 	}
 	
 	protected void onItemRangeRemoved(int startPosition, int itemCount) {
-		this.listObserver.notifyItemRangeRemoved(startPosition, itemCount);
+		if (tryTransactionModification()) {
+			this.listObserver.notifyItemRangeRemoved(startPosition, itemCount);
+		}
 	}
 	
 	protected void onGenericChange() {
-		this.listObserver.notifyGenericChange();
+		if (tryTransactionModification()) {
+			this.listObserver.notifyGenericChange();
+		}
+	}
+
+	/**
+	 * Records a modification attempt to any currently running transaction and
+	 * returns whether the change should notify listeners.
+	 * @return True if the modification should notify listeners, false if it
+	 * should not.
+	 */
+	private boolean tryTransactionModification() {
+		if (runningTransaction) {
+			transactionModified = true;
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public void beginTransaction() {
+		if (!runningTransaction) {
+			runningTransaction = true;
+			transactionModified = false;
+		} else {
+			throw new IllegalStateException("Tried to begin a transaction when one was already running!");
+		}
+	}
+
+	@Override
+	public void endTransaction() {
+		if (runningTransaction) {
+			runningTransaction = false;
+			if (transactionModified) {
+				onGenericChange();
+			}
+		} else {
+			throw new IllegalStateException("Tried to end a transaction when no transaction was running!");
+		}
 	}
 }
