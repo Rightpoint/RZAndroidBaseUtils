@@ -11,8 +11,6 @@ import android.view.animation.Animation.AnimationListener;
  * {@link AnimationListenerWrapper}, each of the managed
  * {@link AnimationListener}s are called appropriately.
  * 
- * @author Dylan James
- *
  */
 public class AnimationListenerWrapper implements AnimationListener {
 	private HashSet<AnimationListener> listeners;

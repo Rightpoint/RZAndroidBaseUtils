@@ -3,7 +3,6 @@ package com.raizlabs.functions;
 /**
  * Interface for a predicate which evaluates a true or false value for a given
  * item.
- * @author Dylan James
  *
  * @param <T> The type of item to evaluate.
  */

@@ -1,108 +1,58 @@
 package com.raizlabs.events;
 
-import java.util.HashSet;
+import com.raizlabs.functions.Delegate;
+import com.raizlabs.functions.DelegateSet;
 
 /**
- * Class which represents an Event with arguments of type T.
- * @author Dylan James
+ * A class which represents an event which notifies a set of listeners when the
+ * event is raised.
  *
- * @param <T>
+ * @param <T> The parameter type of the event.
  */
 public class Event<T> {
-	private HashSet<EventListener<T>> listeners;
-	private HashSet<EventListener<T>> listenersToAdd;
-	private HashSet<EventListener<T>> listenersToRemove;
-	private boolean raisingEvent;
+	private DelegateSet<T> listeners;
 	
-	/**
-	 * Creates a new RZEvent
-	 */
 	public Event() {
-		listeners = new HashSet<EventListener<T>>();
-		listenersToAdd = new HashSet<EventListener<T>>();
-		listenersToRemove = new HashSet<EventListener<T>>();
-		raisingEvent = false;
+		listeners = new DelegateSet<T>();
 	}
 	
 	/**
-	 * Adds an RZEventListener to be notified when this event happens.
-	 * @param listener The listener to be notified.
+	 * Subscribes the given listener to the event so it is called when the event
+	 * is raised.
+	 * @param listener The listener to subscribe.
 	 */
-	public void addListener(EventListener<T> listener) {
-		if (listener != null) {
-			synchronized (this) {
-				// If the event is currently being raised, we can't modify the collection
-				// Add it to the toAdd collection
-				if (raisingEvent) {
-					listenersToAdd.add(listener);
-				} else {
-					listeners.add(listener);
-				}
-			}
-		}
+	public void addListener(Delegate<T> listener) {
+		listeners.add(listener);
 	}
 	
 	/**
-	 * Removes an RZEventListener so it will no longer be notified of
-	 * this event.
-	 * @param listener The RZEventListener to be removed.
-	 * @return True if the listener was removed, false if it wasn't found.
+	 * Unsubscribes the given listener from the event so it is no longer called
+	 * when the event is raised.
+	 * @param listener The listener to unsubscribe.
+	 * @return True if the listener was unsubscribed, false if it wasn't
+	 * subscribed.
 	 */
-	public boolean removeListener(EventListener<T> listener) {
-		synchronized (this) {
-			// If the event is currently being raised, we can't modify the collection
-			// Add it to the toRemove collection
-			if (raisingEvent) {
-				listenersToRemove.add(listener);
-				return listeners.contains(listener);
-			} else {
-				return listeners.remove(listener);
-			}
-		}
+	public boolean removeListener(Delegate<T> listener) {
+		return listeners.remove(listener);
 	}
 	
 	/**
-	 * Raises this event and notifies its listeners.
-	 * @param sender The object raising the even.
-	 * @param args The arguments to the event which will be passed to the listeners.
+	 * Raises this event with the given parameters, notifying all subscribed
+	 * listeners.
+	 * @param params The parameters to send to each listener.
 	 */
-	public void raiseEvent(Object sender, T args) {
-		synchronized (this) {
-			raisingEvent = true;
-			listenersToAdd.clear();
-			listenersToRemove.clear();
-			for (EventListener<T> listener : listeners) {
-				// Don't raise the event if the listener is flagged to be removed.
-				if (!listenersToRemove.contains(listener)) {
-					listener.onEvent(sender, args);
-				}
-			}
-			
-			for (EventListener<T> listener : listenersToAdd) {
-				listeners.add(listener);
-			}
-			
-			for (EventListener<T> listener : listenersToRemove) {
-				listeners.remove(listener);
-			}
-			raisingEvent = false;
-		}
+	public void raiseEvent(T params) {
+		performRaiseEvent(listeners, params);
 	}
 	
 	/**
-	 * Clears all listeners from this event.
+	 * Called to actually raise the event. Subclasses may override this in order
+	 * to perform custom logic, but should be sure to execute the event across
+	 * the given listeners.
+	 * @param listeners A set of listeners which need to be notified.
+	 * @param params The parameters to be sent to each listener.
 	 */
-	public void clear() {
-		synchronized (this) {
-			// If the event is currently being raised, we can't modify the collection
-			// Add all of the current listeners to the toRemove collection
-			if (raisingEvent) {
-				for (EventListener<T> listener : listeners) {
-					listenersToRemove.add(listener);
-				}
-			} else {
-				listeners.clear();
-			}
-		}
+	protected void performRaiseEvent(DelegateSet<T> listeners, T params) {
+		listeners.execute(params);
 	}
 }

@@ -7,13 +7,12 @@ import com.raizlabs.functions.Delegate;
  * A class which contains a set of items and can perform an actions across all
  * items in the set.
  * 
- * @author Dylan James
- *
  * @param <T> The type of item stored in the set.
  */
 public class MappableSet<T> {
 	
 	private TransactionalHashSet<T> members;
+	protected Iterable<T> getMembers() { return members; }
 	
 	/**
 	 * Creates a new empty {@link MappableSet}.
@@ -21,7 +20,6 @@ public class MappableSet<T> {
 	public MappableSet() {
 		members = new TransactionalHashSet<T>();
 	}
-	
 	
 	/**
 	 * Adds the given item to the set.
@@ -64,7 +62,6 @@ public class MappableSet<T> {
 		return members.size();
 	}
 	
-
 	/**
 	 * Calls the given {@link Delegate} on all items in the set. Items may be
 	 * added or removed during this call, but changes may not be reflected
@@ -72,10 +69,18 @@ public class MappableSet<T> {
 	 * @param function The {@link Delegate} to call for each item.
 	 */
 	public void map(Delegate<T> function) {
-		members.beginTransaction();
+		beginTransaction();
 		for (T member : members) {
 			function.execute(member);
 		}
+		endTransaction();
+	}
+
+	public void beginTransaction() {
+		members.beginTransaction();
+	}
+	
+	public void endTransaction() {
 		members.endTransaction();
 	}
 }

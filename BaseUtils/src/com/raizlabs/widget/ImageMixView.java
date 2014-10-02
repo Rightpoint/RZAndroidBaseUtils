@@ -1,5 +1,7 @@
 package com.raizlabs.widget;
 
+import com.raizlabs.math.MathUtils;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,8 +15,6 @@ import android.view.View;
  * the rest of another.
  * <br><br>
  * Note: The view is sized based off the first image.
- * @author Dylan James
- *
  */
 public class ImageMixView extends View {
 	/**
@@ -89,7 +89,7 @@ public class ImageMixView extends View {
 	 * mix respectively.
 	 */
 	public void setMixValue(float mix) {
-		mixValue = com.raizlabs.baseutils.Math.clamp(mix, 0, 1);
+		mixValue = MathUtils.clamp(mix, 0, 1);
 		postInvalidate();
 	}
 	

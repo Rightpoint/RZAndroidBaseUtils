@@ -4,8 +4,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Class containing some helper methods related to concurrency.
- * @author Dylan James
- *
  */
 public class ConcurrencyUtils {
 	/**

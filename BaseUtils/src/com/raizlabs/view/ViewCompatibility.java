@@ -10,8 +10,6 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 /**
  * Compatibility helpers for view related tasks. Handles using API level
  * appropriate methods based on the run time SDK.
- * 
- * @author Dylan James
  */
 public class ViewCompatibility {
 	

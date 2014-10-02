@@ -2,7 +2,6 @@ package com.raizlabs.functions;
 
 /**
  * Interface which provides an object of a specific type.
- * @author Dylan James
  *
  * @param <T> The type of object this interface provides.
  */

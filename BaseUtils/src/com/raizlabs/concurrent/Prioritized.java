@@ -4,8 +4,6 @@ import java.util.Comparator;
 
 /**
  * Indicates that a class has a priority.
- * 
- * @author Dylan James
  */
 public interface Prioritized {
 	/**

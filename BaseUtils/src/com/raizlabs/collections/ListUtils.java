@@ -7,9 +7,6 @@ import com.raizlabs.functions.Predicate;
 
 /**
  * Collection of utilities for use with {@link List}s.
- * 
- * @author Dylan James
- *
  */
 public class ListUtils {
 	/**

@@ -4,9 +4,6 @@ package com.raizlabs.synchronization;
  * A class which is locked until {@link #unlock()} is called.
  * Calling {@link #waitUntilUnlocked()} will block until this has
  * happened. You may synchronize on this object to lock its state.
- * 
- * @author Dylan James
- *
  */
 public class OneShotLock {
 	private boolean unlocked;

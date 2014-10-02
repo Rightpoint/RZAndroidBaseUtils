@@ -15,7 +15,6 @@ import com.raizlabs.view.ViewCompatibility;
 /**
  * Class of helper methods which assist with the loading of images into memory
  * and views. Similar to {@link BitmapFactory}.
- * @author Dylan James
  */
 public class ImageFactory {
 	
@@ -87,7 +86,7 @@ public class ImageFactory {
 	public static boolean setBackground(String pathName, View view) {
 		Bitmap bitmap = decodeFile(pathName, view, true);
 		if (bitmap != null) {
-			ViewCompatibility.setViewBackground(view, new BitmapDrawable(bitmap));
+			ViewCompatibility.setViewBackground(view, new BitmapDrawable(view.getResources(), bitmap));
 			return true;
 		}
 		return false;
@@ -111,7 +110,10 @@ public class ImageFactory {
 	 * @param bitmap The {@link Bitmap} to create a {@link Drawable} for.
 	 * @return The unscaled {@link Drawable}.
 	 */
+	@SuppressWarnings("deprecation")
 	public static Drawable getDrawableUnscaled(Bitmap bitmap) {
+		// Deprecated to enforce usage of scaling
+		// We don't want scaling, so ignoring the deprecation.
 		return new BitmapDrawable(bitmap);
 	}
 	
