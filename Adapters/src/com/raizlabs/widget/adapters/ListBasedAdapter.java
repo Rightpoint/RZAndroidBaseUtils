@@ -33,6 +33,12 @@ import com.raizlabs.widget.adapters.viewholderstrategy.ViewHolderStrategyUtils;
  */
 public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends BaseAdapter implements ObservableList<Item> {
 	
+	// TODO - Can we remove lots of list logic by just containing an
+	// ObservableListWrapper and forwarding method calls?
+	
+	private boolean runningTransaction;
+	private boolean transactionModified;
+	
 	private SimpleListObserver<Item> listObserver;
 	
 	@Override
@@ -47,22 +53,22 @@ public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends
 
 		@Override
 		public void onItemRangeChanged(ListObserver<Item> observer, int startPosition, int itemCount) {
-			listObserver.notifyItemRangeChanged(startPosition, itemCount);
+			ListBasedAdapter.this.onItemRangeChanged(startPosition, itemCount);
 		}
 
 		@Override
 		public void onItemRangeInserted(ListObserver<Item> observer, int startPosition, int itemCount) {
-			listObserver.notifyItemRangeInserted(startPosition, itemCount);
+			ListBasedAdapter.this.onItemRangeInserted(startPosition, itemCount);
 		}
 
 		@Override
 		public void onItemRangeRemoved(ListObserver<Item> observer, int startPosition, int itemCount) {
-			listObserver.notifyItemRangeRemoved(startPosition, itemCount);
+			ListBasedAdapter.this.onItemRangeRemoved(startPosition, itemCount);
 		}
 
 		@Override
 		public void onGenericChange(ListObserver<Item> observer) {
-			listObserver.notifyGenericChange();
+			ListBasedAdapter.this.onGenericChange();
 		}
 	};
 	
@@ -167,7 +173,7 @@ public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends
 	@Override
 	public void notifyDataSetChanged() {
 		super.notifyDataSetChanged();
-		listObserver.notifyGenericChange();
+		onGenericChange();
 	}
 	
 	public void superNotifyDataSetChanged() {
@@ -297,21 +303,21 @@ public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends
 	@Override
 	public void add(int location, Item object) {
 		mList.add(location, object);
-		listObserver.notifyItemRangeInserted(location, 1);
+		onItemRangeInserted(location, 1);
 	}
 
 	@Override
 	public boolean add(Item object) {
 		int location = mList.size();
 		final boolean result = mList.add(object);
-		listObserver.notifyItemRangeInserted(location, 1);
+		onItemRangeInserted(location, 1);
 		return result;
 	}
 
 	@Override
 	public boolean addAll(int location, Collection<? extends Item> collection) {
 		if (mList.addAll(location, collection)) {
-			listObserver.notifyItemRangeInserted(location, collection.size());
+			onItemRangeInserted(location, collection.size());
 			return true;
 		}
 		return false;
@@ -321,7 +327,7 @@ public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends
 	public boolean addAll(Collection<? extends Item> collection) {
 		int location = mList.size();
 		if (mList.addAll(collection)) {
-			listObserver.notifyItemRangeInserted(location, collection.size());
+			onItemRangeInserted(location, collection.size());
 			return true;
 		}
 		return false;
@@ -329,8 +335,9 @@ public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends
 
 	@Override
 	public void clear() {
+		int count = size();
 		mList.clear();
-		listObserver.notifyGenericChange();
+		onItemRangeRemoved(0, count);
 	}
 
 	@Override
@@ -376,7 +383,7 @@ public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends
 	@Override
 	public Item remove(int location) {
 		Item result = mList.remove(location);
-		listObserver.notifyItemRangeRemoved(location, 1);
+		onItemRangeRemoved(location, 1);
 		return result;
 	}
 
@@ -385,7 +392,7 @@ public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends
 		int location = mList.indexOf(object);
 		if (location >= 0) {
 			mList.remove(location);
-			listObserver.notifyItemRangeRemoved(location, 1);
+			onItemRangeRemoved(location, 1);
 			return true;
 		}
 		return false;
@@ -395,7 +402,7 @@ public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends
 	public boolean removeAll(Collection<?> collection) {
 		boolean result = mList.removeAll(collection);
 		if (result) {
-			listObserver.notifyGenericChange();
+			onGenericChange();
 		}
 		return result;
 	}
@@ -404,7 +411,7 @@ public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends
 	public boolean retainAll(Collection<?> collection) {
 		boolean result = mList.retainAll(collection);
 		if (result) {
-			listObserver.notifyGenericChange();
+			onGenericChange();
 		}
 		return result;
 	}
@@ -413,7 +420,7 @@ public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends
 	public Item set(int location, Item object) {
 		Item result = mList.set(location, object);
 		if (!result.equals(object)) {
-			listObserver.notifyItemRangeChanged(location, 1);
+			onItemRangeChanged(location, 1);
 		}
 		return result;
 	}
@@ -436,5 +443,65 @@ public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends
 	@Override
 	public <S> S[] toArray(S[] array) {
 		return mList.toArray(array);
+	}
+	
+	protected void onItemRangeChanged(int startPosition, int itemCount) {
+		if (tryTransactionModification()) {
+			this.listObserver.notifyItemRangeChanged(startPosition, itemCount);
+		}
+	}
+	
+	protected void onItemRangeInserted(int startPosition, int itemCount) {
+		if (tryTransactionModification()) {
+			this.listObserver.notifyItemRangeInserted(startPosition, itemCount);
+		}
+	}
+	
+	protected void onItemRangeRemoved(int startPosition, int itemCount) {
+		if (tryTransactionModification()) {
+			this.listObserver.notifyItemRangeRemoved(startPosition, itemCount);
+		}
+	}
+	
+	protected void onGenericChange() {
+		if (tryTransactionModification()) {
+			this.listObserver.notifyGenericChange();
+		}
+	}
+
+	/**
+	 * Records a modification attempt to any currently running transaction and
+	 * returns whether the change should notify listeners.
+	 * @return True if the modification should notify listeners, false if it
+	 * should not.
+	 */
+	private boolean tryTransactionModification() {
+		if (runningTransaction) {
+			transactionModified = true;
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public void beginTransaction() {
+		if (!runningTransaction) {
+			runningTransaction = true;
+			transactionModified = false;
+		} else {
+			throw new IllegalStateException("Tried to begin a transaction when one was already running!");
+		}
+	}
+
+	@Override
+	public void endTransaction() {
+		if (runningTransaction) {
+			runningTransaction = false;
+			if (transactionModified) {
+				onGenericChange();
+			}
+		} else {
+			throw new IllegalStateException("Tried to end a transaction when no transaction was running!");
+		}
 	}
 }
