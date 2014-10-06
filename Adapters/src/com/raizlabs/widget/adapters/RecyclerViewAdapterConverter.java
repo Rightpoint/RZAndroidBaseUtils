@@ -15,6 +15,18 @@ import android.view.ViewGroup;
  */
 public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder> extends RecyclerView.Adapter<Holder> {
 
+	/**
+	 * Helper for constructing {@link RecyclerViewAdapterConverter}s from
+	 * {@link ListBasedAdapter}s. Handles generics a little more conveniently
+	 * than the equivalent constructor.
+	 * @param listAdapter The list adapter to convert into a RecyclerView
+	 * adapter.
+	 * @return A RecyclerView adapter based on the given list adapter.
+	 */
+	public static <Item, Holder extends ViewHolder> RecyclerViewAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> listAdapter) {
+		return new RecyclerViewAdapterConverter<Item, Holder>(listAdapter);
+	}
+	
 	private ListBasedAdapter<Item, Holder> listAdapter;
 	public ListBasedAdapter<Item, Holder> getListAdapter() { return listAdapter; }
 	
