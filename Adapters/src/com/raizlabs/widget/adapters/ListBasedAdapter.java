@@ -176,7 +176,7 @@ public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends
 		onGenericChange();
 	}
 	
-	public void superNotifyDataSetChanged() {
+	protected void superNotifyDataSetChanged() {
 		super.notifyDataSetChanged();
 	}
 	
