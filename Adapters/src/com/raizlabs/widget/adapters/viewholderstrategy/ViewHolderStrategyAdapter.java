@@ -18,6 +18,19 @@ import com.raizlabs.widget.adapters.ViewHolderWrapper;
  */
 public class ViewHolderStrategyAdapter<Item, HolderType> extends ListBasedAdapter<Item, ViewHolderWrapper<HolderType>> {
 	private ViewHolderStrategy<Item, HolderType> strategy;
+
+	/**
+	 * Helper factory method for constructing {@link ViewHolderStrategyAdapter}s
+	 * from {@link ViewHolderStrategy}s. Handles generics a little more
+	 * conveniently than the equivalent constructor.
+	 * @param strategy The view holder strategy to use to populate the adapter
+	 * views.
+	 * @return An adapter which produces views based on the given view holder
+	 * strategy.
+	 */
+	public static <Item, HolderType> ViewHolderStrategyAdapter<Item, HolderType> from(ViewHolderStrategy<Item, HolderType> strategy) {
+		return new ViewHolderStrategyAdapter<Item, HolderType>(strategy);
+	}
 	
 	/**
 	 * Creates a {@link ViewHolderStrategyAdapter} that utilizes the given
