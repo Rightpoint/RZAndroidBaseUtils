@@ -118,5 +118,18 @@ public class ViewHolderStrategyAdapter<Item, HolderType> extends ListBasedAdapte
 	public void onBindViewHolder(ViewHolderWrapper<HolderType> viewHolder, Item item, int position) {
 		this.strategy.updateView(item, viewHolder.innerHolder);
 	}
-
+	
+	/**
+	 * Gets the {@link ViewHolderStrategy}'s view holder for the given view.
+	 * @param view The view to get the view holder of.
+	 * @return The view holder associated with the view or null if none could
+	 * be found.
+	 */
+	protected HolderType getStrategyViewHolder(View view) {
+		ViewHolderWrapper<HolderType> holder = getViewHolder(view);
+		if (holder != null) {
+			return holder.innerHolder;
+		}
+		return null;
+	}
 }

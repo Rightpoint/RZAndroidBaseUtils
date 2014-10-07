@@ -46,6 +46,7 @@ public class ObservableListWrapper<T> implements ObservableList<T> {
 	public ObservableListWrapper(List<T> underlyingList) {
 		if (underlyingList == null) underlyingList = new LinkedList<T>();
 		this.underlyingList = underlyingList;
+		this.listObserver = new SimpleListObserver<T>();
 	}
 
 	/**

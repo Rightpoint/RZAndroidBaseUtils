@@ -31,7 +31,7 @@ import com.raizlabs.widget.adapters.viewholderstrategy.ViewHolderStrategyUtils;
  * @param <Holder> The type of the {@link ViewHolder} that will be used to hold
  * views.
  */
-public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends BaseAdapter implements ObservableList<Item> {
+public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends BaseAdapter implements ObservableList<Item> {
 	
 	// TODO - Can we remove lots of list logic by just containing an
 	// ObservableListWrapper and forwarding method calls?
@@ -122,7 +122,7 @@ public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends
 		listObserver.addListener(new SimpleListObserverListener<Item>() {
 			@Override
 			public void onGenericChange(ListObserver<Item> observer) {
-				superNotifyDataSetChanged();
+				superNotifyDataSetChangedOnUIThread();
 			}
 		});
 		setItemsList(list);
@@ -178,6 +178,20 @@ public abstract  class ListBasedAdapter<Item, Holder extends ViewHolder> extends
 	
 	protected void superNotifyDataSetChanged() {
 		super.notifyDataSetChanged();
+	}
+	
+	private final Runnable superDataSetChangedRunnable = new Runnable() {
+		@Override
+		public void run() {
+			superNotifyDataSetChanged();
+		}
+	};
+	
+	/**
+	 * Calls {@link #superNotifyDataSetChanged()} on the UI thread.
+	 */
+	protected void superNotifyDataSetChangedOnUIThread() {
+		ThreadingUtils.runOnUIThread(superDataSetChangedRunnable);
 	}
 	
 	private final Runnable dataSetChangedRunnable = new Runnable() {
