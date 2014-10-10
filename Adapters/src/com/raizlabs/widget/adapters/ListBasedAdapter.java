@@ -162,7 +162,7 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
 	 * Loads the given items as the contents of this adapter.
 	 * @param items The {@link Collection} of items to load.
 	 */
-	public void loadItems(Collection<Item> items) {
+	public void loadItems(Collection<? extends Item> items) {
 		List<Item> data = new ArrayList<Item>(items.size());
 		for (Item item : items) {
 			data.add(item);
