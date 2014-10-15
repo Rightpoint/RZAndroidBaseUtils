@@ -30,7 +30,7 @@ public abstract class RecyclerViewItemClickListener implements OnItemTouchListen
 		if (childView != null && gestureDetector.onTouchEvent(e)) {
 			int position = view.getChildPosition(childView);
 			ViewHolder viewHolder = view.getChildViewHolder(childView);
-			onItemClick(viewHolder, view, position);
+			onItemClick(viewHolder, view, position, e.getX(), e.getY());
 		}
 		
 		return false;
@@ -45,5 +45,5 @@ public abstract class RecyclerViewItemClickListener implements OnItemTouchListen
 	 * @param parent The recycler view which contained the clicked item.
 	 * @param position The position in the adapter of the clicked item.
 	 */
-	public abstract void onItemClick(ViewHolder viewHolder, RecyclerView parent, int position);
+	public abstract void onItemClick(ViewHolder viewHolder, RecyclerView parent, int position, float x, float y);
 }
