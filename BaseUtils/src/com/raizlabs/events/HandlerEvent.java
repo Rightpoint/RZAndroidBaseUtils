@@ -45,11 +45,11 @@ public class HandlerEvent<T> extends Event<T> {
 	
 	@Override
 	protected void performRaiseEvent(final DelegateSet<T> listeners, final T params) { 
-		ThreadingUtils.runOnHandler(handler, new Runnable() {
+		ThreadingUtils.runOnHandler(new Runnable() {
 			@Override
 			public void run() {
 				listeners.execute(params);
 			}
-		});
+		}, handler);
 	}
 }

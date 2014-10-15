@@ -45,12 +45,12 @@ public class ThreadingUtils {
 	 * is bound to. This will execute immediately, before this function returns,
 	 * if this function was already called on the given {@link Handler}'s thread.
 	 * Otherwise, the {@link Runnable} will be posted to the {@link Handler}.
-	 * @param handler The {@link Handler} to run the action on.
 	 * @param action The {@link Runnable} to execute.
+	 * @param handler The {@link Handler} to run the action on.
 	 * @return True if the action was already executed before this funcion
 	 * returned, or false if the action was posted to be handled later.
 	 */
-	public static boolean runOnHandler(Handler handler, Runnable action) {
+	public static boolean runOnHandler(Runnable action, Handler handler) {
 		if (isOnHandlerThread(handler)) {
 			action.run();
 			return true;
@@ -100,7 +100,7 @@ public class ThreadingUtils {
 	 * @return True if the action was already executed before this function
 	 * returned, or false if the action was posted.
 	 */
-	public static boolean runOnUIThread(View v, Runnable action) {
+	public static boolean runOnUIThread(Runnable action, View v) {
 		if (isOnUIThread()) {
 			action.run();
 			return true;
@@ -113,30 +113,6 @@ public class ThreadingUtils {
 	}
 	
 	/**
-	 * Runs the given {@link Runnable} on the UI thread. This will execute
-	 * immediately, before this function returns, if this function was called
-	 * on the UI thread. Otherwise, the {@link Runnable} will be posted using
-	 * the given {@link View}.
-	 * <br><br>
-	 * NOTE: This method will attempt to force the action onto the UI thread.
-	 * <br><br>
-	 * WARNING: The action may still not be taken if the view's 
-	 * {@link View#post(Runnable)} method returns true, but doesn't execute. 
-	 * (This is the case when the view is not attached to a window). 
-	 * @see #runOnUIThread(Runnable)
-	 * @see #runOnUIThread(Runnable, Handler)
-	 * @param v A {@link View} to use to post the {@link Runnable} if this
-	 * wasn't called on the UI thread.
-	 * @param action The {@link Runnable} to execute.
-	 * @return True if the action was already executed before this function
-	 * returned, or false if the action was posted.
-	 */
-	@Deprecated
-	public static boolean runOnUIThread(Runnable action, View v) {
-		return runOnUIThread(v, action);
-	}
-	
-	/**
 	 * Runs the given {@link Runnable} immediately if this function is called
 	 * on the UI thread. Otherwise, it is posted to the given {@link Handler}
 	 * and executed on its bound thread. Though it is assumed that the given
@@ -148,24 +124,7 @@ public class ThreadingUtils {
 	 * @return True if the action was already executed before this function
 	 * returned, or false if the action was posted to the {@link Handler}.
 	 */
-	@Deprecated
 	public static boolean runOnUIThread(Runnable action, Handler handler) {
-		return runOnUIThread(handler, action);
-	}
-	
-	/**
-	 * Runs the given {@link Runnable} immediately if this function is called
-	 * on the UI thread. Otherwise, it is posted to the given {@link Handler}
-	 * and executed on its bound thread. Though it is assumed that the given
-	 * {@link Handler} is bound to the UI thread, it is not necessary, and it
-	 * will execute the action either way.
-	 * @param handler The {@link Handler} to post the action to if if this
-	 * wasn't called on the UI thread.
-	 * @param action The {@link Runnable} to execute.
-	 * @return True if the action was already executed before this function
-	 * returned, or false if the action was posted to the {@link Handler}.
-	 */
-	public static boolean runOnUIThread(Handler handler, Runnable action) {
 		if (isOnUIThread()) {
 			action.run();
 			return true;
