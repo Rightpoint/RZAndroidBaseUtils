@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -229,7 +228,7 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
 	 * @param viewHolder The view holder to populate.
 	 * @param position The position of the data in the list.
 	 */
-	public void onBindViewHolder(Holder viewHolder, int position) {
+	public void bindViewHolder(Holder viewHolder, int position) {
 		onBindViewHolder(viewHolder, get(position), position);
 	}
 	
@@ -262,11 +261,11 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
 		
 		if (viewHolder == null) {
 			int viewType = getItemViewType(position);
-			viewHolder = onCreateViewHolder(parent, viewType);
+			viewHolder = createViewHolder(parent, viewType);
 			setViewHolder(viewHolder.itemView, viewHolder);
 		}
 		
-		onBindViewHolder(viewHolder, position);
+		bindViewHolder(viewHolder, position);
 		
 		return viewHolder.itemView;
 	}
@@ -280,11 +279,11 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
 		
 		if (viewHolder == null) {
 			int viewType = getItemViewType(position);
-			viewHolder = onCreateDropDownViewHolder(parent, viewType);
+			viewHolder = createDropDownViewHolder(parent, viewType);
 			setViewHolder(viewHolder.itemView, viewHolder);
 		}
 		
-		onBindDropDownViewHolder(viewHolder, position);
+		bindDropDownViewHolder(viewHolder, position);
 		
 		return viewHolder.itemView;
 	}
@@ -304,14 +303,26 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
 		ViewHolderStrategyUtils.setViewHolder(view, holder);
 	}
 	
-	public abstract Holder onCreateViewHolder(ViewGroup parent, int itemType);
-	
-	public Holder onCreateDropDownViewHolder(ViewGroup parent, int itemType) {
+	public Holder createViewHolder(ViewGroup parent, int itemType) {
 		return onCreateViewHolder(parent, itemType);
 	}
 	
-	public void onBindDropDownViewHolder(Holder viewHolder, int position) {
-		onBindViewHolder(viewHolder, position);
+	protected abstract Holder onCreateViewHolder(ViewGroup parent, int itemType);
+	
+	public Holder createDropDownViewHolder(ViewGroup parent, int itemType) {
+		return onCreateDropDownViewHolder(parent, itemType);
+	}
+	
+	protected Holder onCreateDropDownViewHolder(ViewGroup parent, int itemType) {
+		return onCreateViewHolder(parent, itemType);
+	}
+	
+	public void bindDropDownViewHolder(Holder viewHolder, int position) {
+		onBindDropDownViewHolder(viewHolder, position);
+	}
+	
+	protected void onBindDropDownViewHolder(Holder viewHolder, int position) {
+		onBindViewHolder(viewHolder, get(position), position);
 	}
 
 	@Override

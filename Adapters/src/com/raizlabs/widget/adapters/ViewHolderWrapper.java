@@ -1,6 +1,5 @@
 package com.raizlabs.widget.adapters;
 
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.View;
 
 /**

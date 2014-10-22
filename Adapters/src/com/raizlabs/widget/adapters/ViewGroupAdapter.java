@@ -1,205 +1,215 @@
 package com.raizlabs.widget.adapters;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 
+import com.raizlabs.util.observable.lists.ListObserver;
+import com.raizlabs.util.observable.lists.ListObserverListener;
+import com.raizlabs.util.observable.lists.SimpleListObserverListener;
+import com.raizlabs.widget.adapters.viewholderstrategy.ViewHolderStrategyUtils;
+
 /**
- * Class which binds a set of data to {@link View}s in a given {@link ViewGroup}.
+ * Class which uses a {@link ListBasedAdapter} to display a set of views in a
+ * {@link ViewGroup}. This class keeps a reference to the {@link ViewGroup} and
+ * lives inside the {@link ListBasedAdapter}, so you should call
+ * {@link #cleanup()} when you are done with it or the {@link ViewGroup} will
+ * be detached.
  *
- * @param <T> The type of the data to bind.
+ * @param <Item> The type of the item that views will represent.
+ * @param <Holder> The type of the {@link ViewHolder} that will be used to hold
+ * views.
  */
-public abstract class ViewGroupAdapter<T> {
-	ViewGroup viewGroup;
+public class ViewGroupAdapter<Item, Holder extends ViewHolder> {
+
 	/**
-	 * Gets the {@link ViewGroup} this adapter is bound to.
-	 * @return The {@link ViewGroup} this adapter is bound to.
+	 * Interface for a listener which is called when a {@link ViewGroupAdapter}
+	 * view is clicked.
 	 */
-	public ViewGroup getViewGroup() { return viewGroup; }
-	
-	private List<T> items;
-	/**
-	 * Gets the list of items currently loaded into this adapter.
-	 * @return The list of items.
-	 */
-	public List<T> getCurrentItems() { return items; }
-	
-	private boolean createClickListeners = true;
-	public void setCreateClickListeners(boolean createClickListeners) { this.createClickListeners = createClickListeners; }
-	public boolean createsClickListeners() { return createClickListeners; }
-	
-	public interface ItemClickedListener<T> {
-		public void onItemClicked(ViewGroupAdapter<T> adapter, T item, int index);
-	}
-	private ItemClickedListener<T> itemClickedListener;
-	/**
-	 * Sets the listener to be called when an item is clicked.
-	 * @param listener The listener to call.
-	 */
-	public void setItemClickedListener(ItemClickedListener<T> listener) {
-		this.itemClickedListener = listener;
+	public interface ItemClickedListener<Item, Holder extends ViewHolder> {
+		/**
+		 * Called when an item in the adapter is clicked.
+		 * @param adapter The adapter whose item was clicked.
+		 * @param item The item which was clicked.
+		 * @param holder The view holder for the clicked item.
+		 * @param position The index of the clicked item in the adpater.
+		 */
+		public void onItemClicked(ViewGroupAdapter<Item, Holder> adapter, Item item, Holder holder, int position);
 	}
 	
-	public interface ItemLongClickedListener<T> {
+	/**
+	 * Interface for a listener which is called when a {@link ViewGroupAdapter}
+	 * view is long clicked.
+	 */
+	public interface ItemLongClickedListener<Item, Holder extends ViewHolder> {
 		/**
 		 * Called when an item in the adapter is long clicked.
 		 * @param adapter The adapter whose item was long clicked.
 		 * @param item The item which was long clicked.
-		 * @param index The index of the long clicked item
+		 * @param holder The view holder for the clicked item.
+		 * @param position The index of the long clicked item in the adapter.
 		 * @return true if the callback consumed the long click, false otherwise.
 		 */
-		public boolean onItemLongClicked(ViewGroupAdapter<T> adapter, T item, int index);
+		public boolean onItemLongClicked(ViewGroupAdapter<Item, Holder> adapter, Item item, Holder holder, int position);
 	}
-	private ItemLongClickedListener<T> itemLongClickedListener;
+	
+	/**
+	 * Helper for constructing {@link ViewGroupAdapter}s from
+	 * {@link ListBasedAdapter}s. Handles generics a little more conveniently
+	 * than the equivalent constructor.
+	 * @param adapter The list adapter to use to populate views.
+	 * @param viewGroup The view group which will be populated with views.
+	 * @return An adapter which will populate the view group via the given
+	 * adapter.
+	 */
+	public static <Item, Holder extends ViewHolder> ViewGroupAdapter<Item, Holder> from(ListBasedAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
+		return new ViewGroupAdapter<Item, Holder>(viewGroup, adapter);
+	}
+
+	private ViewGroup viewGroup;
+	/**
+	 * @return The {@link ViewGroup} that this adapter populates.
+	 */
+	public ViewGroup getViewGroup() { return viewGroup; }
+	
+	private ListBasedAdapter<Item, Holder> listAdapter;
+	/**
+	 * @return The {@link ListBasedAdapter} that this adapter uses to populate
+	 * the view group.
+	 */
+	public ListBasedAdapter<Item, Holder> getListAdapter() { return listAdapter; }
+
+	private ItemClickedListener<Item, Holder> itemClickedListener;
+	private ItemLongClickedListener<Item, Holder> itemLongClickedListener;
+	
+	/**
+	 * Sets the listener to be called when an item is clicked.
+	 * @param listener The listener to call.
+	 */
+	public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
+		this.itemClickedListener = listener;
+	}
+	
 	/**
 	 * Sets the listener to be called when an item is long clicked.
 	 * @param listener The listener to call.
 	 */
-	public void setItemLongClickedListener(ItemLongClickedListener<T> listener) {
+	public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
 		this.itemLongClickedListener = listener;
 	}
 	
-	private LayoutInflater getLayoutInflater() {
-		return LayoutInflater.from(viewGroup.getContext());
-	}
-
 	/**
-	 * Creates a {@link ViewGroupAdapter} bound to the given {@link ViewGroup}.
-	 * @param viewGroup The {@link ViewGroup} to bind to.
+	 * Sets the adapter to use to populate the {@link ViewGroup} and laods
+	 * the current data.
+	 * @param adapter The adapter to use to populate the view group.
+	 */
+	public void setAdapter(ListBasedAdapter<Item, Holder> adapter) {
+		if (this.listAdapter != null) {
+			this.listAdapter.getListObserver().removeListener(listChangeListener);
+		}
+		
+		this.listAdapter = adapter;
+		
+		if (this.listAdapter != null) {
+			this.listAdapter.getListObserver().addListener(listChangeListener);
+		}
+		
+		populateAll();
+	}
+	
+	/**
+	 * Constructs a new adapter bound to the given {@link ViewGroup}, but binds
+	 * no data.
+	 * @see #setAdapter(ListBasedAdapter)
+	 * @param viewGroup The view group which will be populated with views.
 	 */
 	public ViewGroupAdapter(ViewGroup viewGroup) {
 		if (viewGroup == null)
 			throw new IllegalArgumentException("ViewGroup may not be null.");
 		
 		this.viewGroup = viewGroup;
-		items = new LinkedList<T>();
 	}
 	
 	/**
-	 * Loads the given items as the data set of this adapter. This replaces all
-	 * existing items.
-	 * @param items The items to set as the data.
+	 * Constructs a new adapter bound to the given {@link ViewGroup}, and binds
+	 * the given adapter.
+	 * @param viewGroup The view group which will be populated with views.
+	 * @param adapter The list adapter to use to populate views.
 	 */
-	public void load(Iterable<T> items) {
-		viewGroup.removeAllViews();
-		this.items.clear();
-		add(items);
+	public ViewGroupAdapter(ViewGroup viewGroup, ListBasedAdapter<Item, Holder> adapter) {
+		this(viewGroup);
+		setAdapter(adapter);
 	}
 	
 	/**
-	 * Adds the given item to the end of the data set of this adapter.
-	 * @param item The item to add.
+	 * Cleans up this adapter and disconnects it from the {@link ViewGroup} and
+	 * {@link ListBasedAdapter}.
 	 */
-	public void add(T item) {
-		addItem(item, getLayoutInflater());
+	public void cleanup() {
+		this.viewGroup = null;
+		setAdapter(null);
 	}
 	
-	/**
-	 * Adds the given items to the end of the data set of this adapter.
-	 * @param items The items to add.
-	 */
-	public void add(Iterable<T> items) {
-		if (items == null) return;
-		final LayoutInflater inflater = getLayoutInflater();
-		for (T item : items) {
-			addItem(item, inflater);
-		}
-	}
-	
-	
-	/**
-	 * Removes all items from the data set of this adapter.
-	 */
-	public void clear() {
-		items.clear();
+	private void clear() {
 		viewGroup.removeAllViews();
 	}
 	
-	/**
-	 * Returns the index of the first occurrence of the given item.
-	 * @param item The item to retrieve the index of.
-	 * @return The first index of the given item or -1 if it was not found.
-	 */
-	public int indexOf(T item) {
-		return items.indexOf(item);
-	}
-	
-	/**
-	 * Removes the first occurrence of the given item from the data set of this
-	 * adapter.
-	 * @param item The item to remove.
-	 * @return True if the item was removed, false if it was not.
-	 */
-	public boolean remove(T item) {
-		if (item == null) return false;
-		final int index = items.indexOf(item);
-		return item.equals(removeAt(index));
-	}
-	
-	/**
-	 * Removes the item at the given position in this adapter.
-	 * @param position The index to remove from.
-	 * @return The item that was removed.
-	 */
-	public T removeAt(int position) {
-		T item = items.remove(position);
-		View view = getViewForIndex(position);
-		viewGroup.removeView(view);
-		return item;
-	}
-	
-	/**
-	 * Finds the view in the {@link ViewGroup} for the given position.
-	 * Default implementation passes this call through to {@link ViewGroup#getChildAt(int)}.
-	 * Override this method if your child implementation is customizing the
-	 * arrangement or positions of child views in this adapter.
-	 * @param position The position of the view you would like to retrieve
-	 * @return The {@link View} at the given position in the {@link ViewGroup}.
-	 */
-	public View getViewForIndex(int position) {
-		return viewGroup.getChildAt(position);
-	}
-	
-	protected void addItem(final T item, LayoutInflater inflater) {
-		items.add(item);
-		View view = createView(item, inflater, viewGroup);
-		viewGroup.addView(view);
+	private void populateAll() {
+		clear();
 		
-		if (createClickListeners) {
-			view.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if (itemClickedListener != null) {
-						final int index = viewGroup.indexOfChild(v);
-						itemClickedListener.onItemClicked(ViewGroupAdapter.this, item, index);
-					}
-				}
-			});
-			view.setOnLongClickListener(new OnLongClickListener() {
-				@Override
-				public boolean onLongClick(View v) {
-					if (itemLongClickedListener != null) {
-						final int index = viewGroup.indexOfChild(v);
-						return itemLongClickedListener.onItemLongClicked(ViewGroupAdapter.this, item, index);
-					}
-					return false;
-				}
-			});
+		if (listAdapter != null) {
+			final int count = listAdapter.getCount();
+			for (int i = 0; i < count; i++) {
+				addItem(i);
+			}
 		}
 	}
 	
-	/**
-	 * Called to get the {@link View} to be displayed for the given item.
-	 * @param item The item to get the view for.
-	 * @param inflater A {@link LayoutInflater} to use to create the view.
-	 * @param root The container the {@link View} will be added to. The
-	 * implementation should not add the view itself.
-	 * @return The {@link View} to display for the given item.
-	 */
-	protected abstract View createView(T item, LayoutInflater inflater, ViewGroup root);
+	private void addItem(int index) {
+		Holder holder = listAdapter.createViewHolder(getViewGroup(), listAdapter.getItemViewType(index));
+		listAdapter.bindViewHolder(holder, index);
+		
+		View view = holder.itemView;
+		ViewHolderStrategyUtils.setViewHolder(view, holder);
+		view.setOnClickListener(internalItemClickListener);
+		view.setOnLongClickListener(internalItemLongClickListener);
+		
+		getViewGroup().addView(view, index);
+	}
+	
+	private ListObserverListener<Item> listChangeListener = new SimpleListObserverListener<Item>() {
+		@Override
+		public void onGenericChange(ListObserver<Item> observer) {
+			populateAll();
+		}
+	};
+	
+	private OnClickListener internalItemClickListener = new OnClickListener() {
+		@SuppressWarnings("unchecked")
+		@Override
+		public void onClick(View v) {
+			if (itemClickedListener != null) {
+				int index = getViewGroup().indexOfChild(v);
+				Item item = listAdapter.get(index);
+				Holder holder = (Holder) ViewHolderStrategyUtils.getViewHolder(v);
+				itemClickedListener.onItemClicked(ViewGroupAdapter.this, item, holder, index);
+			}
+		}
+	};
+	
+	private OnLongClickListener internalItemLongClickListener = new OnLongClickListener() {
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		public boolean onLongClick(View v) {
+			if (itemLongClickedListener != null) {
+				int index = getViewGroup().indexOfChild(v);
+				Item item = listAdapter.get(index);
+				Holder holder = (Holder) ViewHolderStrategyUtils.getViewHolder(v);
+				return itemLongClickedListener.onItemLongClicked(ViewGroupAdapter.this, item, holder, index);
+			}
+			return false;
+		}
+	};
 }

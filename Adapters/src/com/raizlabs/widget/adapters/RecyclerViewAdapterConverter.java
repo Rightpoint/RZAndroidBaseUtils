@@ -1,7 +1,6 @@
 package com.raizlabs.widget.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.ViewGroup;
 
 /**
@@ -11,7 +10,8 @@ import android.view.ViewGroup;
  * outer adapter.
  *
  * @param <Item> The type of item that views will represent.
- * @param <Holder> The type of the {@link ViewHolder} that will be used to hold.
+ * @param <Holder> The type of the {@link ViewHolder} that will be used to hold
+ * views.
  */
 public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder> extends RecyclerView.Adapter<Holder> {
 
@@ -54,12 +54,12 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder> exten
 
 	@Override
 	public void onBindViewHolder(Holder viewHolder, int itemType) {
-		listAdapter.onBindViewHolder(viewHolder, itemType);
+		listAdapter.bindViewHolder(viewHolder, itemType);
 	}
 
 	@Override
 	public Holder onCreateViewHolder(ViewGroup parent, int position) {
-		return listAdapter.onCreateViewHolder(parent, position);
+		return listAdapter.createViewHolder(parent, position);
 	}
 	
 }

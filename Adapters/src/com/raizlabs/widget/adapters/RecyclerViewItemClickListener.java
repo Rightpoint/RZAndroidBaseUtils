@@ -2,7 +2,6 @@ package com.raizlabs.widget.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnItemTouchListener;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,7 +28,7 @@ public abstract class RecyclerViewItemClickListener implements OnItemTouchListen
 		View childView = view.findChildViewUnder(e.getX(), e.getY());
 		if (childView != null && gestureDetector.onTouchEvent(e)) {
 			int position = view.getChildPosition(childView);
-			ViewHolder viewHolder = view.getChildViewHolder(childView);
+			ViewHolder viewHolder = (ViewHolder) view.getChildViewHolder(childView);
 			onItemClick(viewHolder, view, position, e.getX(), e.getY());
 		}
 		
