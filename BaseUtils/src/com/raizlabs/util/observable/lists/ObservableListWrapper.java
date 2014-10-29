@@ -234,7 +234,7 @@ public class ObservableListWrapper<T> implements ObservableList<T> {
 	public boolean remove(Object object) {
 		int index = underlyingList.indexOf(object);
 		if (index >= 0) {
-			underlyingList.remove(index);
+			remove(index);
 			return true;
 		}
 		return false;
