@@ -147,8 +147,8 @@ public class ViewGroupAdapter<Item, Holder extends ViewHolder> {
 	 * {@link ListBasedAdapter}.
 	 */
 	public void cleanup() {
-		this.viewGroup = null;
 		setAdapter(null);
+		this.viewGroup = null;
 	}
 	
 	private void clear() {
