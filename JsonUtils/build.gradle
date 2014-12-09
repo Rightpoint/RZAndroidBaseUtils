@@ -4,3 +4,6 @@ android {
     compileSdkVersion 21
     buildToolsVersion baseutils_tools_version
 }
+
+apply from: '../maven_push.gradle'
+apply from: '../android-artifacts.gradle'
