@@ -8,9 +8,13 @@ buildscript {
 }
 
 allprojects {
+    apply from: 'maven_push.gradle'
+    apply from: 'android-artifacts.gradle'
+
     group = GROUP
 
     repositories {
         mavenCentral()
     }
 }
+
