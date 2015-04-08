@@ -5,6 +5,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 
+import com.raizlabs.threading.ThreadingUtils;
 import com.raizlabs.util.observable.lists.ListObserver;
 import com.raizlabs.util.observable.lists.ListObserverListener;
 import com.raizlabs.util.observable.lists.SimpleListObserverListener;
@@ -179,12 +180,17 @@ public class ViewGroupAdapter<Item, Holder extends ViewHolder> {
 	}
 	
 	private ListObserverListener<Item> listChangeListener = new SimpleListObserverListener<Item>() {
-		@Override
-		public void onGenericChange(ListObserver<Item> observer) {
-			populateAll();
-		}
-	};
-	
+        @Override
+        public void onGenericChange(ListObserver<Item> observer) {
+            ThreadingUtils.runOnUIThread(new Runnable() {
+                @Override
+                public void run() {
+                    populateAll();
+                }
+            });
+        }
+    };
+
 	private OnClickListener internalItemClickListener = new OnClickListener() {
 		@SuppressWarnings("unchecked")
 		@Override
