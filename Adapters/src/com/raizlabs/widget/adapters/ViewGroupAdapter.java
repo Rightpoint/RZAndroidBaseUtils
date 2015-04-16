@@ -24,6 +24,8 @@ import com.raizlabs.widget.adapters.viewholderstrategy.ViewHolderStrategyUtils;
  */
 public class ViewGroupAdapter<Item, Holder extends ViewHolder> {
 
+    private static final int DEFAULT_MAX_RETRIES = 5;
+
 	/**
 	 * Interface for a listener which is called when a {@link ViewGroupAdapter}
 	 * view is clicked.
@@ -155,15 +157,30 @@ public class ViewGroupAdapter<Item, Holder extends ViewHolder> {
 	private void clear() {
 		viewGroup.removeAllViews();
 	}
-	
-	private void populateAll() {
+
+    private void populateAll() {
+        populateAll(DEFAULT_MAX_RETRIES);
+    }
+
+	private void populateAll(int maxRetries) {
 		clear();
-		
+
 		if (listAdapter != null) {
-			final int count = listAdapter.getCount();
-			for (int i = 0; i < count; i++) {
-				addItem(i);
-			}
+            final int count = listAdapter.getCount();
+            try {
+                for (int i = 0; i < count; i++) {
+                    addItem(i);
+                }
+            } catch (IndexOutOfBoundsException e) {
+                if (listAdapter.getCount() != count) {
+                    // Adapter size changed...Retry
+                    if (--maxRetries <= 0) {
+                        throw new RuntimeException("Failed to populate, underlying list adapter keeps changing sizes");
+                    } else {
+                        populateAll(maxRetries);
+                    }
+                }
+            }
 		}
 	}
 	
