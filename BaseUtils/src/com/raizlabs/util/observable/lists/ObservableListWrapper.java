@@ -58,6 +58,7 @@ public class ObservableListWrapper<T> implements ObservableList<T> {
 	 * @param list The list which will back this adapter
 	 */
 	public void setList(List<T> list) {
+		if (list == null) list = new LinkedList<T>();
 		this.underlyingList = list;
 		onGenericChange();
 	}
